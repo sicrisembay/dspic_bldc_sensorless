@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="65">
   <logicalFolder name="root" displayName="root" projectFiles="true">
+    <logicalFolder name="SourceFiles" displayName="app" projectFiles="true">
+      <logicalFolder name="f1" displayName="freertos" projectFiles="true">
+        <itemPath>../app/freertos/FreeRTOSConfig.h</itemPath>
+        <itemPath>../app/freertos/hook.c</itemPath>
+      </logicalFolder>
+      <itemPath>../app/main.c</itemPath>
+    </logicalFolder>
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
@@ -9,9 +16,49 @@
                    displayName="Linker Files"
                    projectFiles="true">
     </logicalFolder>
-    <logicalFolder name="SourceFiles"
-                   displayName="Source Files"
-                   projectFiles="true">
+    <logicalFolder name="f1" displayName="third_party" projectFiles="true">
+      <logicalFolder name="f1" displayName="FreeRTOS" projectFiles="true">
+        <logicalFolder name="f1" displayName="include" projectFiles="true">
+          <itemPath>../third_party/FreeRTOS/include/FreeRTOS.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/StackMacros.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/atomic.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/croutine.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/deprecated_definitions.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/event_groups.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/list.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/message_buffer.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/mpu_prototypes.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/mpu_wrappers.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/portable.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/projdefs.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/queue.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/semphr.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/stack_macros.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/stream_buffer.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/task.h</itemPath>
+          <itemPath>../third_party/FreeRTOS/include/timers.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="f2" displayName="portable" projectFiles="true">
+          <logicalFolder name="f1" displayName="MemMang" projectFiles="true">
+            <itemPath>../third_party/FreeRTOS/portable/MemMang/heap_1.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="f2" displayName="MPLAB" projectFiles="true">
+            <logicalFolder name="f1" displayName="PIC24_dsPIC" projectFiles="true">
+              <itemPath>../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/port.c</itemPath>
+              <itemPath>../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portasm_PIC24.S</itemPath>
+              <itemPath>../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portasm_dsPIC.S</itemPath>
+              <itemPath>../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portmacro.h</itemPath>
+            </logicalFolder>
+          </logicalFolder>
+        </logicalFolder>
+        <itemPath>../third_party/FreeRTOS/croutine.c</itemPath>
+        <itemPath>../third_party/FreeRTOS/event_groups.c</itemPath>
+        <itemPath>../third_party/FreeRTOS/list.c</itemPath>
+        <itemPath>../third_party/FreeRTOS/queue.c</itemPath>
+        <itemPath>../third_party/FreeRTOS/stream_buffer.c</itemPath>
+        <itemPath>../third_party/FreeRTOS/tasks.c</itemPath>
+        <itemPath>../third_party/FreeRTOS/timers.c</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -19,6 +66,11 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+    <Elem>../third_party/FreeRTOS</Elem>
+    <Elem>../app</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
@@ -77,7 +129,8 @@
         <property key="enable-short-double" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
-        <property key="extra-include-directories" value=""/>
+        <property key="extra-include-directories"
+                  value="..\app\freertos;..\third_party\FreeRTOS\include;..\third_party\FreeRTOS\portable\MPLAB\PIC24_dsPIC"/>
         <property key="isolate-each-function" value="false"/>
         <property key="keep-inline" value="false"/>
         <property key="oXC16gcc-align-arr" value="false"/>
