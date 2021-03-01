@@ -3,6 +3,9 @@
 
 #include <p33FJ128MC706A.h>
 
+#define configDMA0_INTERRUPT_PRIORITY    (configKERNEL_INTERRUPT_PRIORITY)  // uses FreeRTOS API
+#define configDMA1_INTERRUPT_PRIORITY    (configKERNEL_INTERRUPT_PRIORITY)  // uses FreeRTOS API
+
 /*-----------------------------------------------------------
  * Application specific definitions.
  *
@@ -46,7 +49,7 @@ to exclude the API function. */
 #define INCLUDE_xTaskGetSchedulerState          1
 #define INCLUDE_xTaskGetCurrentTaskHandle       1
 #define INCLUDE_uxTaskGetStackHighWaterMark     0
-#define INCLUDE_xTaskGetIdleTaskHandle          0
+#define INCLUDE_xTaskGetIdleTaskHandle          1
 #define INCLUDE_eTaskGetState                   0
 #define INCLUDE_xEventGroupSetBitFromISR        1
 #define INCLUDE_xTimerPendFunctionCall          0

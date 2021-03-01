@@ -2,11 +2,33 @@
 <configurationDescriptor version="65">
   <logicalFolder name="root" displayName="root" projectFiles="true">
     <logicalFolder name="SourceFiles" displayName="app" projectFiles="true">
+      <logicalFolder name="f2" displayName="bldc" projectFiles="true">
+        <itemPath>../app/bldc/bldc.c</itemPath>
+        <itemPath>../app/bldc/bldc.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="driver" projectFiles="true">
+        <itemPath>../app/driver/drv_timer.c</itemPath>
+        <itemPath>../app/driver/drv_timer.h</itemPath>
+        <itemPath>../app/driver/drv_adc.c</itemPath>
+        <itemPath>../app/driver/drv_adc.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f1" displayName="freertos" projectFiles="true">
-        <itemPath>../app/freertos/FreeRTOSConfig.h</itemPath>
         <itemPath>../app/freertos/hook.c</itemPath>
       </logicalFolder>
+      <logicalFolder name="f3" displayName="utility" projectFiles="true">
+        <logicalFolder name="f1" displayName="filter" projectFiles="true">
+          <itemPath>../app/utility/filter/util_filter.c</itemPath>
+          <itemPath>../app/utility/filter/util_filter.h</itemPath>
+        </logicalFolder>
+        <itemPath>../app/utility/util_trace.c</itemPath>
+        <itemPath>../app/utility/util_trace.h</itemPath>
+      </logicalFolder>
       <itemPath>../app/main.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="f2" displayName="config" projectFiles="true">
+      <itemPath>../config/FreeRTOSConfig.h</itemPath>
+      <itemPath>../config/global_def.h</itemPath>
+      <itemPath>../config/PinConfig.h</itemPath>
     </logicalFolder>
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
@@ -45,7 +67,6 @@
           <logicalFolder name="f2" displayName="MPLAB" projectFiles="true">
             <logicalFolder name="f1" displayName="PIC24_dsPIC" projectFiles="true">
               <itemPath>../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/port.c</itemPath>
-              <itemPath>../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portasm_PIC24.S</itemPath>
               <itemPath>../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portasm_dsPIC.S</itemPath>
               <itemPath>../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portmacro.h</itemPath>
             </logicalFolder>
@@ -70,6 +91,7 @@
     <Elem>.</Elem>
     <Elem>../third_party/FreeRTOS</Elem>
     <Elem>../app</Elem>
+    <Elem>../config</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -130,7 +152,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="..\app\freertos;..\third_party\FreeRTOS\include;..\third_party\FreeRTOS\portable\MPLAB\PIC24_dsPIC"/>
+                  value="..\app\bldc;..\app\driver;..\app\utility;..\app\utility\filter;..\config;..\third_party\FreeRTOS\include;..\third_party\FreeRTOS\portable\MPLAB\PIC24_dsPIC"/>
         <property key="isolate-each-function" value="false"/>
         <property key="keep-inline" value="false"/>
         <property key="oXC16gcc-align-arr" value="false"/>

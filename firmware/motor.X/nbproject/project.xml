@@ -16,6 +16,7 @@
                 <sourceRootElem>.</sourceRootElem>
                 <sourceRootElem>../third_party/FreeRTOS</sourceRootElem>
                 <sourceRootElem>../app</sourceRootElem>
+                <sourceRootElem>../config</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
