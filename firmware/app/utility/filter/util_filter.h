@@ -15,17 +15,16 @@
 // Public / Internal definitions.
 //*****************************************************************************
 
-//***************************************************************************** 
-//! Structure for Biquad Direct Form 2 Filter
-//!
-//! Transfer function of a normalized (a0 = 1) biquadratic filter
-//!
-//!         Y(z)     b0 + b1*z^-1 + b2*z^-2
-//! H(z) = ----- =  ------------------------
-//!         X(z)     1 + a1*z^-1 + a2*z^-2
-//!
-//! 
-//*****************************************************************************
+/*!
+ * \struct IIR_BIQUAD_DF2_T
+ * Structure for Biquad Direct Form 2 Filter where its transfer function
+ * is a normalized (a0 = 1) biquadratic filter
+ *
+ *          Y(z)     b0 + b1*z^-1 + b2*z^-2
+ * H(z) = ----- =  ------------------------
+ *         X(z)     1 + a1*z^-1 + a2*z^-2
+ *
+ */
 typedef struct {
     _Q16 a1;        //!< Biquadratic filter coefficient
     _Q16 a2;        //!< Biquadratic filter coefficient

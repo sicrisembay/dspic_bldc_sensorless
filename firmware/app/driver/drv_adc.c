@@ -93,21 +93,24 @@ volatile UNSIGNED16_T ImonDmaBuffer = 0;
  */
 volatile UNSIGNED16_T VmonDmaBuffer = 0;
 
-//*****************************************************************************
-//! Filtered motor current data in 1.15 Fixed point format.  Update rate
-//! is 5kHz.
-//*****************************************************************************
+/*!
+ * \var fractional Imon_Filter_V[NUM_IMON_CH]
+ * Filtered motor current data in 1.15 Fixed point format.  Update rate
+ * is 5kHz.
+ */
 volatile fractional Imon_Filter_V[NUM_IMON_CH];
 
-//*****************************************************************************
-//! Filtered motor terminal voltage data in 1.15 Fixed point format.  
-//! Update rate is 1.25kHz.
-//*****************************************************************************
+/*!
+ * \var UNSIGNED16_T Vmon_Filter_V
+ * Filtered motor terminal voltage data in 1.15 Fixed point format.  
+ * Update rate is 1.25kHz.
+ */
 volatile UNSIGNED16_T Vmon_Filter_V[NUM_VMON_CH];
 
-//*****************************************************************************
-//! Temporary buffer
-//*****************************************************************************
+/*!
+ * \var fractional ImonInputSignal[NUM_IMON_CH][NUMSAMP]
+ * Temporary buffer
+ */
 volatile fractional ImonInputSignal[NUM_IMON_CH][NUMSAMP];
 
 #if(ENABLE_DSPIC33_FILTERING == 1)
@@ -150,30 +153,6 @@ static void PrvAdc_ProcessVmon(UNSIGNED16_T buffId);
 // Public function implementations.
 //*****************************************************************************
 
-//*****************************************************************************
-//! \brief  This function initializes the ADC peripheral.
-//!
-//! There are two ADC's.  ADC1 is used to measure IMON1 (AN0), IMON2 (AN1),
-//! IMON3 (AN2), IMON4 (AN3) using MUXA for simultaneous sampling (CH0, CH1,CH2,
-//! CH3).  ADC1 format is 10bit signed fractional (1.15 Fixed point or Q15).
-//! ADC2 converter voltage reference is AVdd and AVss.  DMA buffers are written
-//! in order of conversion CH0, CH1, CH2, CH3.  and increments DMA address after
-//! completion of every 4 samples/conversion. DMA buffer is allocated 4 words 
-//! to each 4 analog input.
-//! 
-//! ADC2 is used to measure VMON1 (AN10), VMON2 (AN11), VMON3 (AN12), 
-//! VMON4 (AN13) using MUXA for sequential sampling on CH0.  ADC2 samples 
-//! multiple channels individually in sequence, VMON1, VMON2, VMON3, VMON4.  
-//! ADC2 format is 10bit unsigned integer.  ADC2 converter voltage reference is
-//! AVdd and AVss.  DMA buffer is allocated 4 words to each 4 analog input and
-//! increments DMA address after completion of every 4 samples/conversion.
-//!
-//! This function also initializes the biquad Lower pass filter states for IMON1,
-//! IMON2, IMON3, and IMON4.
-//!
-//! \param  None
-//! \return \c void
-//*****************************************************************************
 void DrvAdc_Init(void)
 {
 #if(ENABLE_DSPIC33_FILTERING != 1)
@@ -272,8 +251,8 @@ void DrvAdc_Init(void)
     AD2CHS0bits.CH0NA   = CLEAR;    // Channel 0 negative input is VREFL
     
     // A/D Input Scan Selection Register
-    AD2CSSLbits.CSS10   = 1;		// Enable AN10 for channel scan (VMON1)
-    AD2CSSLbits.CSS11   = 1;		// Enable AN11 for channel scan (VMON2)
+    AD2CSSLbits.CSS10   = 1;        // Enable AN10 for channel scan (VMON1)
+    AD2CSSLbits.CSS11   = 1;        // Enable AN11 for channel scan (VMON2)
     AD2CSSLbits.CSS12   = 1;        // Enable AN12 for channel scan (VMON3)
     AD2CSSLbits.CSS13   = 1;        // Enable AN13 for channel scan (VMON4) 
             

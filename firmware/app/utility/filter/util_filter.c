@@ -7,7 +7,6 @@
 
 _Q16 UtilFilter_ExecuteDF2(_Q16 input, IIR_BIQUAD_DF2_T *pxFilter)
 {
-#if 0
     _Q16 output;
     _Q16 a0;
     
@@ -21,10 +20,6 @@ _Q16 UtilFilter_ExecuteDF2(_Q16 input, IIR_BIQUAD_DF2_T *pxFilter)
     pxFilter->d0 = a0;
     
     return(output);
-#else
-    (void)pxFilter;
-    return input;
-#endif
 }
 
 //*****************************************************************************

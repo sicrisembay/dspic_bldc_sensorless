@@ -37,7 +37,10 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "global_def.h"
+#include "PinConfig.h"
 #include "bldc.h"
+#include "util_trace.h"
 
 /*!
  * \brief  This function initializes the core clock
@@ -68,12 +71,60 @@ static void PrvConfigureClk(void)
     while(OSCCONbits.LOCK != 1);
 }
 
+static void PrvConfigurePin(void)
+{
+    // User LED
+    PIN_DIR_OUT(DIR_USER_LED_1);
+    PIN_DIR_OUT(DIR_USER_LED_2);
+    PIN_DIR_OUT(DIR_USER_LED_3);
+    PIN_DIR_OUT(DIR_USER_LED_4);
+    
+    // User Buttons
+    AD1PCFGLbits.PCFG8 = 1;
+    AD2PCFGLbits.PCFG8 = 1;
+    AD1PCFGLbits.PCFG14 = 1;
+    AD2PCFGLbits.PCFG14 = 1;
+    PIN_DIR_IN(DIR_BTN1);
+    PIN_DIR_IN(DIR_BTN2);
+}
+
+
+static void PrvTest(void *pvParam)
+{
+    UNSIGNED16_T i = 0;
+    TickType_t xLastExecutionTime;
+    xLastExecutionTime = xTaskGetTickCount();
+
+    vTaskSetApplicationTaskTag(NULL, (void *)CTX_TASK_TEST);
+    
+    while(1)
+    {
+        vTaskDelayUntil( &xLastExecutionTime, 10);
+        USER_LED_1 = BTN1;
+        USER_LED_2 = BTN2;
+        i++;
+        if(i >= 100) {
+            i = 0;
+            if(USER_LED_4) {
+                USER_LED_4 = CLEAR;
+            } else {
+                USER_LED_4 = SET;
+            }
+        }
+    }
+}
+
 
 int main(void)
 {
     PrvConfigureClk();
+    PrvConfigurePin();
 
-    BLDC_init();
+    HOOK_TRACE_INIT;
+
+//    BLDC_init();
+
+    xTaskCreate( PrvTest, "Tst", configMINIMAL_STACK_SIZE*2, NULL, configTASK_PRIORITY_TEST, NULL );
 
     vTaskStartScheduler();
 
@@ -81,5 +132,7 @@ int main(void)
     /*
      * It never reach here.
      */
+    while(1);
+
     return 1;
 }

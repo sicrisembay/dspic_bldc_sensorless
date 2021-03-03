@@ -14,17 +14,17 @@
  * \def USE_TRACE_HOOK
  * 
  * Use to enable or disable the trace feature.
- * Set 0 to disable, 1 to eenable
+ * Set 0 to disable, 1 to enable
  */
-#define USE_TRACE_HOOK              (1)
+#define USE_TRACE_HOOK              (0)
 
 /*!
  * \def USE_TRACE_CPU_LOAD
  * 
  * Use to enable or disable the CPU load calculation.
- * Set 0 to disable, 1 to eenable
+ * Set 0 to disable, 1 to enable
  */
-#define USE_TRACE_CPU_LOAD          (1)
+#define USE_TRACE_CPU_LOAD          (0)
 
 /*!
  * \def CPU_USAGE_UPDATE_PERIOD
