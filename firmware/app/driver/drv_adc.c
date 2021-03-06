@@ -8,17 +8,6 @@
 #include "PinConfig.h"
 #include "drv_adc.h"
 #include "util_trace.h"
-#include "util_filter.h"
-
-//*****************************************************************************
-//! This enables or disables the use dsPIC33 DSP filter library.
-//! 1-ENABLE; 0-DISABLE
-//*****************************************************************************
-#define ENABLE_DSPIC33_FILTERING        (0) // 1-ENABLE; 0-DISABLE
-
-#if(ENABLE_DSPIC33_FILTERING == 0)
-#define ENABLE_LPF_FREQ_1KHZ            (1) // 1-Use 1kHz LPF; 0-Use 500Hz LPF
-#endif
 
 /*!
  * \def NUM_ANALOG_BUFFER_WORDS
@@ -94,49 +83,24 @@ volatile UNSIGNED16_T ImonDmaBuffer = 0;
 volatile UNSIGNED16_T VmonDmaBuffer = 0;
 
 /*!
- * \var fractional Imon_Filter_V[NUM_IMON_CH]
- * Filtered motor current data in 1.15 Fixed point format.  Update rate
+ * \var fractional Imon_V[NUM_IMON_CH]
+ * Motor current ADC in 1.15 Fixed point format.  Update rate
  * is 5kHz.
  */
-volatile fractional Imon_Filter_V[NUM_IMON_CH];
+volatile fractional Imon_V[NUM_IMON_CH];
 
 /*!
- * \var UNSIGNED16_T Vmon_Filter_V
- * Filtered motor terminal voltage data in 1.15 Fixed point format.  
+ * \var UNSIGNED16_T Vmon_V
+ * Motor terminal voltage data in 1.15 Fixed point format.  
  * Update rate is 1.25kHz.
  */
-volatile UNSIGNED16_T Vmon_Filter_V[NUM_VMON_CH];
+volatile UNSIGNED16_T Vmon_V[NUM_VMON_CH];
 
 /*!
  * \var fractional ImonInputSignal[NUM_IMON_CH][NUMSAMP]
  * Temporary buffer
  */
 volatile fractional ImonInputSignal[NUM_IMON_CH][NUMSAMP];
-
-#if(ENABLE_DSPIC33_FILTERING == 1)
-// Anti-aliasing Low Pass Filter for the Decimator (Downsampling)
-extern IIRCanonicStruct ImonDecimatorLpfFilter1;
-extern IIRCanonicStruct ImonDecimatorLpfFilter2;
-extern IIRCanonicStruct ImonDecimatorLpfFilter3;
-extern IIRCanonicStruct ImonDecimatorLpfFilter4;
-volatile fractional ImonDecimatorOutputSignal[NUM_IMON_CH][NUMSAMP];
-volatile fractional *ptrImonDecimatorLpfOutput[NUM_IMON_CH];
-static IIRCanonicStruct *ptrImonDecimatorLpfFilter[NUM_IMON_CH];
-// Motor Current Low Pass Filter
-extern IIRCanonicStruct ImonLpfFilter1;
-extern IIRCanonicStruct ImonLpfFilter2;
-extern IIRCanonicStruct ImonLpfFilter3;
-extern IIRCanonicStruct ImonLpfFilter4;
-volatile fractional ImonInputLpfSignal[NUM_IMON_CH];
-volatile fractional ImonOutputSignal[NUM_IMON_CH];
-volatile fractional *ptrImonLpfOutput[NUM_IMON_CH];
-static IIRCanonicStruct *ptrImonLpfFilter[NUM_IMON_CH];
-extern void IIRCanonicInit(IIRCanonicStruct* filter);
-extern fractional* IIRTransposed(int numSamps, fractional* dstSamps, fractional* srcSamps,
-                                    IIRTransposedStruct* filter);
-#else
-volatile IIR_BIQUAD_DF2_T ImonLpfFilter[NUM_IMON_CH];
-#endif
 
 //*****************************************************************************
 // Public / Internal member external declarations.
@@ -155,10 +119,6 @@ static void PrvAdc_ProcessVmon(UNSIGNED16_T buffId);
 
 void DrvAdc_Init(void)
 {
-#if(ENABLE_DSPIC33_FILTERING != 1)
-    UNSIGNED16_T chIdx = 0;
-#endif
-    
     // Configure Analog Pin
     AD1PCFGLbits.PCFG0 = 0;
     AD2PCFGLbits.PCFG0 = 0;
@@ -256,67 +216,6 @@ void DrvAdc_Init(void)
     AD2CSSLbits.CSS12   = 1;        // Enable AN12 for channel scan (VMON3)
     AD2CSSLbits.CSS13   = 1;        // Enable AN13 for channel scan (VMON4) 
             
-#if(ENABLE_DSPIC33_FILTERING == 1)
-    // Initialize Decimator Anti-aliasing filter
-    IIRCanonicInit(&ImonDecimatorLpfFilter1); // Initialize state variables in the digital
-                                    // low pass filter to zero.
-    IIRCanonicInit(&ImonDecimatorLpfFilter2);
-    IIRCanonicInit(&ImonDecimatorLpfFilter3);
-    IIRCanonicInit(&ImonDecimatorLpfFilter4);
-    ptrImonDecimatorLpfFilter[IMON1] = &ImonDecimatorLpfFilter1;
-    ptrImonDecimatorLpfFilter[IMON2] = &ImonDecimatorLpfFilter2;
-    ptrImonDecimatorLpfFilter[IMON3] = &ImonDecimatorLpfFilter3;
-    ptrImonDecimatorLpfFilter[IMON4] = &ImonDecimatorLpfFilter4;
-    
-    // Initialize Motor current filter
-    IIRCanonicInit(&ImonLpfFilter1);
-    IIRCanonicInit(&ImonLpfFilter2);
-    IIRCanonicInit(&ImonLpfFilter3);
-    IIRCanonicInit(&ImonLpfFilter4);
-    ptrImonLpfFilter[IMON1] = &ImonLpfFilter1;
-    ptrImonLpfFilter[IMON2] = &ImonLpfFilter2;
-    ptrImonLpfFilter[IMON3] = &ImonLpfFilter3;
-    ptrImonLpfFilter[IMON4] = &ImonLpfFilter4;
-#else
-#if(ENABLE_LPF_FREQ_1KHZ == 1)
-    // Low Pass Filter
-    // Design Method: Butterworth
-    // Filter Order: 2
-    // Section: 1
-    // Fs: 20kHz
-    // Fc: 1kHz
-    for(chIdx = 0; chIdx < NUM_IMON_CH; chIdx++)
-    {
-        ImonLpfFilter[chIdx].a1     = -102302;  // Q16(-1.5610180758007182)
-        ImonLpfFilter[chIdx].a2     = 42031;    // Q16(0.64135153805756318)
-        ImonLpfFilter[chIdx].b0     = 65536;    // Q16(1.0)
-        ImonLpfFilter[chIdx].b1     = 131072;   // Q16(2.0)
-        ImonLpfFilter[chIdx].b2     = 65536;    // Q16(1.0)
-        ImonLpfFilter[chIdx].gain   = 1316;     // Q16(0.020083365564211236)
-        ImonLpfFilter[chIdx].d0     = 0;
-        ImonLpfFilter[chIdx].d1     = 0;
-    }
-#else
-    // Low Pass Filter
-    // Design Method: Butterworth
-    // Filter Order: 2
-    // Section: 1
-    // Fs: 20kHz
-    // Fc: 500Hz
-    for(chIdx = 0; chIdx < NUM_IMON_CH; chIdx++)
-    {
-        ImonLpfFilter[chIdx].a1     = -116564;  // Q16(-1.7786317778245848)
-        ImonLpfFilter[chIdx].a2     = 52481;    // Q16(0.80080264666570755)
-        ImonLpfFilter[chIdx].b0     = 65536;    // Q16(1.0)
-        ImonLpfFilter[chIdx].b1     = 131072;   // Q16(2.0)
-        ImonLpfFilter[chIdx].b2     = 65536;    // Q16(1.0)
-        ImonLpfFilter[chIdx].gain   = 363;      // Q16(0.0055427172102806817)
-        ImonLpfFilter[chIdx].d0     = 0;
-        ImonLpfFilter[chIdx].d1     = 0;
-    }
-#endif
-#endif
-    
     // Enable ADC =============================================================
     // ADC1
     IFS0bits.AD1IF      = CLEAR;    // Clear the A/D interrupt flag bit
@@ -329,7 +228,6 @@ void DrvAdc_Init(void)
     
     // Configure DMA channels used for ADC
     PrvAdc_InitDma();
-
 }
 
 
@@ -360,7 +258,7 @@ fractional DrvAdc_GetImonAdcValue(IMON_CH_T chIdx)
     fractional retval = 0;
     if(chIdx < NUM_IMON_CH)
     {
-        retval = Imon_Filter_V[chIdx];
+        retval = Imon_V[chIdx];
     }
     return(retval);
 }
@@ -379,7 +277,7 @@ UNSIGNED16_T DrvAdc_GetVmonAdcValue(VMON_CH_T chIdx)
     UNSIGNED16_T retval = 0;
     if(chIdx < NUM_VMON_CH)
     {
-        retval = Vmon_Filter_V[chIdx];
+        retval = Vmon_V[chIdx];
     }
     return(retval);
 }
@@ -494,9 +392,9 @@ static void PrvAdc_ProcessVmon(UNSIGNED16_T buffId)
                 // Simple IIR filter.
                 // the same operation but more optimized
                 //
-                // Vmon_Filter_V[chIdx] = (((Vmon_Filter_V[chIdx] * 7) + Vmon_BufferA[sampleIdx][chIdx]) / 8);
+                // Vmon_V[chIdx] = (((Vmon_V[chIdx] * 7) + Vmon_BufferA[sampleIdx][chIdx]) / 8);
                 //
-                Vmon_Filter_V[chIdx] = (((Vmon_Filter_V[chIdx] << 3) - Vmon_Filter_V[chIdx]) + Vmon_BufferA[sampleIdx][chIdx]) >> 3;
+                Vmon_V[chIdx] = (((Vmon_V[chIdx] << 3) - Vmon_V[chIdx]) + Vmon_BufferA[sampleIdx][chIdx]) >> 3;
             }
         }
     }
@@ -511,9 +409,9 @@ static void PrvAdc_ProcessVmon(UNSIGNED16_T buffId)
                 // Simple IIR filter.
                 // the same operation but more optimized
                 //
-                // Vmon_Filter_V[chIdx] = (((Vmon_Filter_V[chIdx] * 7) + Vmon_BufferB[sampleIdx][chIdx]) / 8);
+                // Vmon_V[chIdx] = (((Vmon_V[chIdx] * 7) + Vmon_BufferB[sampleIdx][chIdx]) / 8);
                 //
-                Vmon_Filter_V[chIdx] = (((Vmon_Filter_V[chIdx] << 3) - Vmon_Filter_V[chIdx]) + Vmon_BufferB[sampleIdx][chIdx]) >> 3;
+                Vmon_V[chIdx] = (((Vmon_V[chIdx] << 3) - Vmon_V[chIdx]) + Vmon_BufferB[sampleIdx][chIdx]) >> 3;
             }
         }
     }
@@ -529,67 +427,15 @@ void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     volatile UNSIGNED16_T chIdx;
-#if (ENABLE_DSPIC33_FILTERING != 1)
-    UNSIGNED16_T sampleIdx;
-#endif
 
     HOOK_TRACE_IN(CTX_DMA0_ISR, TRUE);
     IFS0bits.DMA0IF = CLEAR;
     PrvAdc_ProcessImon(ImonDmaBuffer);
-    for(chIdx = 0; chIdx < NUM_IMON_CH; chIdx++)
-    {
-#if (ENABLE_DSPIC33_FILTERING == 1)
-        //**********************************************************************
-        // ADC sampling rate for motor current is the same as the PWM frequency 
-        // at 20kHz.  The motor current control loop runs at 5kHz. Thus, 
-        // decimator (downsampling) is needed. Decimator factor (M) is 4 (equal 
-        // to NUM_ANALOG_BUFFER_WORDS per DMA interrupt).
-        //
-        // Step1: Reduce high-frequency signal components with a Digital LPF.
-        // Step2: Downsample the filtered signal by M; keep only every Mth sample.
-        //**********************************************************************
-        
-        // Step1: Reduce high-frequency signal components with a Digital LPPF.
-        // Anti-aliasing filter cut-off frequency should be less than the nyquist
-        // frequency divided by the decimator factor (M).
-        //
-        // Nyquist Frequency: (20kHz / 2) = 10kHz
-        // Anti-alias LPF Maximum allowable cut-off frequency: 10kHz / M = 2.5kHz
-        // For this application, Fc = 1.0kHz is used 
-        ptrImonDecimatorLpfOutput[chIdx] = IIRCanonic(NUMSAMP, (fractional*)&ImonDecimatorOutputSignal[chIdx][0], 
-                (fractional*)&ImonInputSignal[chIdx][0], ptrImonDecimatorLpfFilter[chIdx]);
-        
-        // Step2: Downsample the filtered signal.
-        // Filtered signal is stored in the array ImonDecimatorOutputSignal. The 
-        // downsampled signal is stored in ImonDecimatorOutputSignal[chIdx][NUMSAMP-1].
-        ImonInputLpfSignal[chIdx] = ImonDecimatorOutputSignal[chIdx][NUMSAMP-1];
-        
-        //**********************************************************************
-        // The downsampled motor current is furthered passed through a 
-        // Low Pass Filter to filter out unwanted noise.
-        //
-        // LPF Sample Frequency, Fs: 5kHz
-        // LPF Cutoff Frequency, Fc: 100Hz
-        //
-        // Note: Previous implementation is to directly filter the ADC signal
-        // (sample rate at 20kHz) using a LPF with 100Hz cutoff frequency without
-        // downsampling.  However, the result was undesirable and distorted. It
-        // was suspected that it was due to coefficient truncation
-        //**********************************************************************
-        ptrImonLpfOutput[chIdx] = IIRCanonic(1, (fractional*)&ImonOutputSignal[chIdx],
-                (fractional*)&ImonInputLpfSignal[chIdx], ptrImonLpfFilter[chIdx]);
-        
-        Imon_Filter_V[chIdx] = ImonOutputSignal[chIdx];
-#else
-        for(sampleIdx = 0; sampleIdx < NUMSAMP; sampleIdx++)
-        {
-            Imon_Filter_V[chIdx] = UtilFilter_ExecuteDF2(ImonInputSignal[chIdx][sampleIdx],
-                    (IIR_BIQUAD_DF2_T *)&(ImonLpfFilter[chIdx]));
-        }
-#endif
+    for(chIdx = 0; chIdx < NUM_IMON_CH; chIdx++) {
+        Imon_V[chIdx] = ImonInputSignal[chIdx][NUMSAMP - 1];
     }
     ImonDmaBuffer ^= 1;
-    
+
     if(NULL != xTaskDma0Notify)
     {
         vTaskNotifyGiveFromISR( xTaskDma0Notify, &xHigherPriorityTaskWoken );

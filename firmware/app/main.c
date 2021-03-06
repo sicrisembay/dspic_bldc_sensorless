@@ -41,6 +41,11 @@
 #include "PinConfig.h"
 #include "bldc.h"
 #include "util_trace.h"
+#include "drv_pwm.h"
+#include "drv_uart.h"
+#include "pc_interface.h"
+#include "drv_timer.h"
+#include "drv_adc.h"
 
 /*!
  * \brief  This function initializes the core clock
@@ -80,9 +85,9 @@ static void PrvConfigurePin(void)
     PIN_DIR_OUT(DIR_USER_LED_4);
     
     // User Buttons
-    AD1PCFGLbits.PCFG8 = 1;
+    AD1PCFGLbits.PCFG8 = 1;     // Digital Pin
     AD2PCFGLbits.PCFG8 = 1;
-    AD1PCFGLbits.PCFG14 = 1;
+    AD1PCFGLbits.PCFG14 = 1;    // Digital Pin
     AD2PCFGLbits.PCFG14 = 1;
     PIN_DIR_IN(DIR_BTN1);
     PIN_DIR_IN(DIR_BTN2);
@@ -121,6 +126,16 @@ int main(void)
     PrvConfigurePin();
 
     HOOK_TRACE_INIT;
+
+    DrvTmr_Init();
+    DrvPwm_Init();
+    DrvAdc_Init();
+    if(DRV_UART_ERR_NONE != DrvUart_Init()) {
+        configASSERT(0);
+    }
+    if(PCINTERFACE_NOERROR != PcInf_Init()) {
+        configASSERT(0);
+    }
 
 //    BLDC_init();
 

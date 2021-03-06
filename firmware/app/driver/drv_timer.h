@@ -13,6 +13,5 @@
 void DrvTmr_Init(void);
 UNSIGNED32_T DrvTmr_GetValue(void);
 void DrvTmr_ResetCount(void);
-/// DOXYS_ON
 
 #endif // End DRV_TIMER_H

@@ -11,9 +11,17 @@
         <itemPath>../app/driver/drv_timer.h</itemPath>
         <itemPath>../app/driver/drv_adc.c</itemPath>
         <itemPath>../app/driver/drv_adc.h</itemPath>
+        <itemPath>../app/driver/drv_pwm.c</itemPath>
+        <itemPath>../app/driver/drv_pwm.h</itemPath>
+        <itemPath>../app/driver/drv_uart.c</itemPath>
+        <itemPath>../app/driver/drv_uart.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="freertos" projectFiles="true">
         <itemPath>../app/freertos/hook.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5" displayName="pcIntf" projectFiles="true">
+        <itemPath>../app/pcIntf/pc_interface.c</itemPath>
+        <itemPath>../app/pcIntf/pc_interface.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="utility" projectFiles="true">
         <logicalFolder name="f1" displayName="filter" projectFiles="true">
@@ -153,7 +161,7 @@
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
         <property key="extra-include-directories"
-                  value="..\app\bldc;..\app\driver;..\app\utility;..\app\utility\filter;..\config;..\third_party\FreeRTOS\include;..\third_party\FreeRTOS\portable\MPLAB\PIC24_dsPIC"/>
+                  value="..\app\bldc;..\app\driver;..\app\pcIntf;..\app\utility;..\app\utility\filter;..\config;..\third_party\FreeRTOS\include;..\third_party\FreeRTOS\portable\MPLAB\PIC24_dsPIC"/>
         <property key="isolate-each-function" value="false"/>
         <property key="keep-inline" value="false"/>
         <property key="oXC16gcc-align-arr" value="false"/>

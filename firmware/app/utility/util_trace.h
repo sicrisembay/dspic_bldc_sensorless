@@ -16,7 +16,7 @@
  * Use to enable or disable the trace feature.
  * Set 0 to disable, 1 to enable
  */
-#define USE_TRACE_HOOK              (0)
+#define USE_TRACE_HOOK              (1)
 
 /*!
  * \def USE_TRACE_CPU_LOAD
