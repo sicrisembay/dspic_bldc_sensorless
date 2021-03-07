@@ -8,6 +8,7 @@
 #include "global_def.h"
 #include "pc_interface.h"
 #include "drv_uart.h"
+#include "drv_adc.h"
 
 //=================================================================================================
 // Private definitions.
@@ -39,7 +40,14 @@ static LOG_LEVEL_T logLevel = LOG_INFO;
 //=================================================================================================
 
 //=================================================================================================
-// Private function implementation.
+// Private function prototype.
+//=================================================================================================
+static void PrvPcInf_TskSendData(void *pvParam);
+static void PrvPcInf_ProcessPacket(UNSIGNED8_T u8_idx, UNSIGNED8_T u8_size);
+static BOOLEAN_T PrvPcInf_TransmitPacket(UNSIGNED8_T *pu8Buffer);
+
+//=================================================================================================
+// Private function implementation
 //=================================================================================================
 static void PrvPcInf_ProcessPacket(UNSIGNED8_T u8_idx, UNSIGNED8_T u8_size)
 {
@@ -55,8 +63,63 @@ static void PrvPcInf_ProcessPacket(UNSIGNED8_T u8_idx, UNSIGNED8_T u8_size)
     
     cmdId = pu8_PcInf_ReceiveBuffer[u8_idx];
     
-    switch(cmdId)
-    {
+    switch(cmdId) {
+        case CMD_GET_DATA_ITEMS: {
+            pu8_PcInf_ResponseBuffer[0] = TAG_STATUS;
+            pu8_PcInf_ResponseBuffer[1] = 6;
+            pu8_PcInf_ResponseBuffer[2] = CMD_GET_DATA_ITEMS;
+            pu8_PcInf_ResponseBuffer[3] = (UNSIGNED8_T)(u16PcInfDataFlag & 0x00ff);
+            pu8_PcInf_ResponseBuffer[4] = (UNSIGNED8_T)((u16PcInfDataFlag >> 8) & 0x00ff);
+            PrvPcInf_TskSendData(pu8_PcInf_ResponseBuffer);
+            break;
+        }
+        case CMD_ENABLE_DATA_ITEM: {
+            if(TRUE != bPcInfDataStreamIsRunning) {
+                u16PcInfDataFlag |= (1 << pu8_PcInf_ReceiveBuffer[(u8_idx+1)%PCINF_BUFF_LEN]);
+            }
+            // reply
+            pu8_PcInf_ResponseBuffer[0] = TAG_STATUS;
+            pu8_PcInf_ResponseBuffer[1] = 6;
+            pu8_PcInf_ResponseBuffer[2] = CMD_ENABLE_DATA_ITEM;
+            pu8_PcInf_ResponseBuffer[3] = pu8_PcInf_ReceiveBuffer[(u8_idx+1)%PCINF_BUFF_LEN];
+            pu8_PcInf_ResponseBuffer[4] = ((u16PcInfDataFlag >> pu8_PcInf_ReceiveBuffer[(u8_idx+1)%PCINF_BUFF_LEN]) & 0x01);
+            PrvPcInf_TransmitPacket(pu8_PcInf_ResponseBuffer);
+            break;
+        }
+        case CMD_DISABLE_DATA_ITEM: {
+            if(TRUE != bPcInfDataStreamIsRunning) {
+                u16PcInfDataFlag &= ~(1 << pu8_PcInf_ReceiveBuffer[(u8_idx+1)%PCINF_BUFF_LEN]);
+            }
+            // reply
+            pu8_PcInf_ResponseBuffer[0] = TAG_STATUS;
+            pu8_PcInf_ResponseBuffer[1] = 6;
+            pu8_PcInf_ResponseBuffer[2] = CMD_DISABLE_DATA_ITEM;
+            pu8_PcInf_ResponseBuffer[3] = pu8_PcInf_ReceiveBuffer[(u8_idx+1)%PCINF_BUFF_LEN];
+            pu8_PcInf_ResponseBuffer[4] = ((u16PcInfDataFlag >> pu8_PcInf_ReceiveBuffer[(u8_idx+1)%PCINF_BUFF_LEN]) & 0x01);
+            PrvPcInf_TransmitPacket(pu8_PcInf_ResponseBuffer);
+            break;
+        }
+        case CMD_START_DATA_STREAM: {
+            bPcInfDataStreamIsRunning = TRUE;
+            if(eSuspended == eTaskGetState(xTaskHandlePcInfDataSend)) {
+                vTaskResume(xTaskHandlePcInfDataSend);
+            }
+            // reply
+            pu8_PcInf_ResponseBuffer[0] = TAG_STATUS;
+            pu8_PcInf_ResponseBuffer[1] = 4;
+            pu8_PcInf_ResponseBuffer[2] = CMD_START_DATA_STREAM;
+            PrvPcInf_TransmitPacket(pu8_PcInf_ResponseBuffer);
+            break;
+        }
+        case CMD_STOP_DATA_STREAM: {
+            bPcInfDataStreamIsRunning = FALSE;
+            // reply
+            pu8_PcInf_ResponseBuffer[0] = TAG_STATUS;
+            pu8_PcInf_ResponseBuffer[1] = 4;
+            pu8_PcInf_ResponseBuffer[2] = CMD_STOP_DATA_STREAM;
+            PrvPcInf_TransmitPacket(pu8_PcInf_ResponseBuffer);
+            break;
+        }
         default: {
             break;
         }
@@ -212,8 +275,46 @@ static void PrvPcInf_TskSendData(void *pvParam)
             /*
              * Gather Data and Send
              */
-            
-            /* Wait for the next cycle */
+            nDataCount = 2; // Tag + Length
+
+            // Send streaming flags
+            pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16PcInfDataFlag & 0x00FF);
+            pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16PcInfDataFlag >> 8) & 0x00FF);
+
+            // Check if data is enabled for streaming
+            if(((u16PcInfDataFlag >> DATA_TIME) & 0x01) == 0x01) {
+                u16TempVal = xTaskGetTickCount();
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
+            }
+            if(((u16PcInfDataFlag >> DATA_CURRENT_ADC_WINDING) & 0x01) == 0x01) {
+                u16TempVal = DrvAdc_GetImonAdcValue(IMON1);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
+                u16TempVal = DrvAdc_GetImonAdcValue(IMON2);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
+                u16TempVal = DrvAdc_GetImonAdcValue(IMON3);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
+            }
+            if(((u16PcInfDataFlag >> DATA_VOLTAGE_ADC_WINDING) & 0x01) == 0x01) {
+                u16TempVal = DrvAdc_GetVmonAdcValue(VMON1);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
+                u16TempVal = DrvAdc_GetVmonAdcValue(VMON2);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
+                u16TempVal = DrvAdc_GetVmonAdcValue(VMON3);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
+            }
+
+            pu8_PcInf_XmitDataBuffer[0] = TAG_DATA;
+            pu8_PcInf_XmitDataBuffer[1] = nDataCount + 1; // +1 for checksum byte
+            PrvPcInf_TransmitPacket(pu8_PcInf_XmitDataBuffer);
+
+            // Wait for the next cycle
             vTaskDelayUntil(&xLastWakeTime, configTASK_PCINF_SEND_INTERVAL_MS);
         }
     }

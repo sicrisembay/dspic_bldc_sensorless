@@ -14,7 +14,7 @@
  * This is the number of words of the analog buffer used for DMA operation.
  * This is equivalent to 2^DMABL.
  */
-#define NUM_ANALOG_BUFFER_WORDS         (4)  // 2^DMABL
+#define NUM_ANALOG_BUFFER_WORDS         (2)  // 2^DMABL
 
 /*!
  * \def NUMSAMP
@@ -85,22 +85,17 @@ volatile UNSIGNED16_T VmonDmaBuffer = 0;
 /*!
  * \var fractional Imon_V[NUM_IMON_CH]
  * Motor current ADC in 1.15 Fixed point format.  Update rate
- * is 5kHz.
+ * is 10kHz.
  */
-volatile fractional Imon_V[NUM_IMON_CH];
+volatile UNSIGNED16_T Imon_V[NUM_IMON_CH];
 
 /*!
  * \var UNSIGNED16_T Vmon_V
  * Motor terminal voltage data in 1.15 Fixed point format.  
- * Update rate is 1.25kHz.
+ * Update rate is 2.5kHz.
  */
 volatile UNSIGNED16_T Vmon_V[NUM_VMON_CH];
 
-/*!
- * \var fractional ImonInputSignal[NUM_IMON_CH][NUMSAMP]
- * Temporary buffer
- */
-volatile fractional ImonInputSignal[NUM_IMON_CH][NUMSAMP];
 
 //*****************************************************************************
 // Public / Internal member external declarations.
@@ -110,8 +105,6 @@ volatile fractional ImonInputSignal[NUM_IMON_CH][NUMSAMP];
 // Private function prototypes.
 //*****************************************************************************
 static void PrvAdc_InitDma(void);
-static void PrvAdc_ProcessImon(UNSIGNED16_T buffId);
-static void PrvAdc_ProcessVmon(UNSIGNED16_T buffId);
 
 //*****************************************************************************
 // Public function implementations.
@@ -153,7 +146,7 @@ void DrvAdc_Init(void)
     AD1CON1bits.ADSIDL  = CLEAR;    // Continue module operation in Idle mode
     AD2CON1bits.ADDMABM = SET;      // DMA buffers are written in order of conversion
     AD1CON1bits.AD12B   = CLEAR;    // 10-bit
-    AD1CON1bits.FORM    = 3;        // Signed Fraction Format (Q15)
+    AD1CON1bits.FORM    = 0;        // Integer Format
     AD1CON1bits.SSRC    = 3;        // MCPWM1 interval ends sampling and start conversion
     AD1CON1bits.SIMSAM  = SET;      // Samples Simultaneously
     AD1CON1bits.ASAM    = SET;      // Sampling begins immediately after last conversion
@@ -174,7 +167,7 @@ void DrvAdc_Init(void)
                                     // Tsim = Tsamp + Tconv *4
                                     // Automatic Sampling (ASAM).. Tsamp = 18.8us (Note: min. is 2Tad)
 
-    AD1CON4bits.DMABL   = 2;        // Allocates 4 words of buffer to each 4 analog input
+    AD1CON4bits.DMABL   = 1;        // Allocates 2 words of buffer to each analog input
     
     AD1CHS123bits.CH123NA = 0;      // CH1, CH2, CH3 negative input is VREFL
     AD1CHS123bits.CH123SA = CLEAR;  // CH1 positive input is AN0 (IMON1)
@@ -205,9 +198,9 @@ void DrvAdc_Init(void)
  
     AD2CON3bits.ADRC    = CLEAR;    // Clock Derived from System Clock
     AD2CON3bits.ADCS    = 63;       // (ADCS + 1) * 1/40M = 1.6us
-    
-    AD2CON4bits.DMABL   = 2;        // Allocates 4 words of buffer to each 4 analog input
-    
+
+    AD2CON4bits.DMABL   = 1;        // Allocates 2 words of buffer to each 1 analog input
+
     AD2CHS0bits.CH0NA   = CLEAR;    // Channel 0 negative input is VREFL
     
     // A/D Input Scan Selection Register
@@ -251,13 +244,12 @@ void DrvAdc_SetCurrentControlHandlerOne(TaskHandle_t tskHandle)
 //!
 //! \param  chIdx  Motor Current Channel ID
 //!
-//! \return Motor current ADC value in fractional format (1.15 Fixed Point)
+//! \return Motor current ADC value
 //*****************************************************************************
-fractional DrvAdc_GetImonAdcValue(IMON_CH_T chIdx)
+UNSIGNED16_T DrvAdc_GetImonAdcValue(IMON_CH_T chIdx)
 {
-    fractional retval = 0;
-    if(chIdx < NUM_IMON_CH)
-    {
+    UNSIGNED16_T retval = 0;
+    if(chIdx < NUM_IMON_CH) {
         retval = Imon_V[chIdx];
     }
     return(retval);
@@ -275,8 +267,7 @@ fractional DrvAdc_GetImonAdcValue(IMON_CH_T chIdx)
 UNSIGNED16_T DrvAdc_GetVmonAdcValue(VMON_CH_T chIdx)
 {
     UNSIGNED16_T retval = 0;
-    if(chIdx < NUM_VMON_CH)
-    {
+    if(chIdx < NUM_VMON_CH) {
         retval = Vmon_V[chIdx];
     }
     return(retval);
@@ -303,7 +294,7 @@ static void PrvAdc_InitDma(void)
     DMA0CONbits.AMODE   = 0;        // Configure DMA for Register indirect mode with post-increment
     DMA0CONbits.MODE    = 2;        // Configure DMA for Continuous Ping-Pong mode
     DMA0PAD = (volatile unsigned int)&ADC1BUF0;     // Point DMA to ADC1BUF0
-    DMA0CNT = 15;                   // 16 DMA request
+    DMA0CNT = 7;                    // 8 DMA request
     DMA0REQbits.IRQSEL  = 13;       // ADC1 convert Done
     DMA0STA = __builtin_dmaoffset(Imon_BufferA);
     DMA0STB = __builtin_dmaoffset(Imon_BufferB);
@@ -316,7 +307,7 @@ static void PrvAdc_InitDma(void)
     DMA1CONbits.AMODE   = 0;        // Configure DMA for Register indirect mode with post-increment
     DMA1CONbits.MODE    = 2;        // Configure DMA for Continuous Ping-Pong mode
     DMA1PAD = (volatile unsigned int)&ADC2BUF0;     // Point DMA to ADC2BUF0
-    DMA1CNT = 15;                   // 16 DMA request
+    DMA1CNT = 7;                    // 8 DMA request
     DMA1REQbits.IRQSEL  = 21;       // ADC2 Convert Done
     DMA1STA = __builtin_dmaoffset(Vmon_BufferA);
     DMA1STB = __builtin_dmaoffset(Vmon_BufferB);
@@ -330,93 +321,6 @@ static void PrvAdc_InitDma(void)
     DMA1CONbits.CHEN    = SET;      // Enable DMA1
 }
 
-//*****************************************************************************
-//! \brief  PRIVATE FUNCTION: This function processes the buffers used in DMA
-//! channel0 (DMA0).
-//! 
-//! \param  buffId Buffer ID that is used in DMA ping-pong mode.  
-//! \return \c void
-//*****************************************************************************
-static void PrvAdc_ProcessImon(UNSIGNED16_T buffId)
-{
-    volatile UNSIGNED16_T sampleIdx;
-    volatile UNSIGNED16_T chIdx;
-    
-    if(buffId == 0)
-    {
-        // Process BufferA
-        for(chIdx = 0; chIdx < NUM_IMON_CH; chIdx++)
-        {
-            for(sampleIdx = 0; sampleIdx < NUM_ANALOG_BUFFER_WORDS; sampleIdx++)
-            {
-                // Copy DMA data to Filter Input Buffer (Format: Q15)
-                ImonInputSignal[chIdx][sampleIdx] = Imon_BufferA[sampleIdx][chIdx];
-            }
-        }
-    }
-    else
-    {
-        // Process BufferB
-        for(chIdx = 0; chIdx < NUM_IMON_CH; chIdx++)
-        {
-            for(sampleIdx = 0; sampleIdx < NUM_ANALOG_BUFFER_WORDS; sampleIdx++)
-            {
-                // Copy DMA data to Filter Input Buffer (Format: Q15)
-                ImonInputSignal[chIdx][sampleIdx] = Imon_BufferB[sampleIdx][chIdx];
-            }
-        }
-    }
-}
-
-
-//*****************************************************************************
-//! \brief  PRIVATE FUNCTION: This function processes the buffers used in DMA
-//! channel1 (DMA1).
-//! 
-//! \param  buffId Buffer ID that is used in DMA ping-pong mode.  
-//! \return \c void
-//*****************************************************************************
-static void PrvAdc_ProcessVmon(UNSIGNED16_T buffId)
-{
-    volatile UNSIGNED16_T sampleIdx;
-    volatile UNSIGNED16_T chIdx;
-    
-    if(buffId == 0)
-    {
-        // Process BufferA
-        for(chIdx = 0; chIdx < NUM_VMON_CH; chIdx++)
-        {
-            for(sampleIdx = 0; sampleIdx < NUM_ANALOG_BUFFER_WORDS; sampleIdx++)
-            {
-                //
-                // Simple IIR filter.
-                // the same operation but more optimized
-                //
-                // Vmon_V[chIdx] = (((Vmon_V[chIdx] * 7) + Vmon_BufferA[sampleIdx][chIdx]) / 8);
-                //
-                Vmon_V[chIdx] = (((Vmon_V[chIdx] << 3) - Vmon_V[chIdx]) + Vmon_BufferA[sampleIdx][chIdx]) >> 3;
-            }
-        }
-    }
-    else
-    {
-        // Process BufferB
-        for(chIdx = 0; chIdx < NUM_VMON_CH; chIdx++)
-        {
-            for(sampleIdx = 0; sampleIdx < NUM_ANALOG_BUFFER_WORDS; sampleIdx++)
-            {
-                //
-                // Simple IIR filter.
-                // the same operation but more optimized
-                //
-                // Vmon_V[chIdx] = (((Vmon_V[chIdx] * 7) + Vmon_BufferB[sampleIdx][chIdx]) / 8);
-                //
-                Vmon_V[chIdx] = (((Vmon_V[chIdx] << 3) - Vmon_V[chIdx]) + Vmon_BufferB[sampleIdx][chIdx]) >> 3;
-            }
-        }
-    }
-}
-
 
 //*****************************************************************************
 //! \brief  This function is the Interrupt Service Routine of DMA Channel0.
@@ -426,25 +330,30 @@ static void PrvAdc_ProcessVmon(UNSIGNED16_T buffId)
 void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    volatile UNSIGNED16_T chIdx;
 
     HOOK_TRACE_IN(CTX_DMA0_ISR, TRUE);
     IFS0bits.DMA0IF = CLEAR;
-    PrvAdc_ProcessImon(ImonDmaBuffer);
-    for(chIdx = 0; chIdx < NUM_IMON_CH; chIdx++) {
-        Imon_V[chIdx] = ImonInputSignal[chIdx][NUMSAMP - 1];
+
+    if(ImonDmaBuffer == 0) {
+        // Process BufferA
+        Imon_V[IMON1] = (Imon_BufferA[0][IMON1] + Imon_BufferA[1][IMON1]) >> 1;
+        Imon_V[IMON2] = (Imon_BufferA[0][IMON2] + Imon_BufferA[1][IMON2]) >> 1;
+        Imon_V[IMON3] = (Imon_BufferA[0][IMON3] + Imon_BufferA[1][IMON3]) >> 1;
+    } else {
+        // Process BufferB
+        Imon_V[IMON1] = (Imon_BufferB[0][IMON1] + Imon_BufferB[1][IMON1]) >> 1;
+        Imon_V[IMON2] = (Imon_BufferB[0][IMON2] + Imon_BufferB[1][IMON2]) >> 1;
+        Imon_V[IMON3] = (Imon_BufferB[0][IMON3] + Imon_BufferB[1][IMON3]) >> 1;
     }
     ImonDmaBuffer ^= 1;
 
-    if(NULL != xTaskDma0Notify)
-    {
+    if(NULL != xTaskDma0Notify) {
         vTaskNotifyGiveFromISR( xTaskDma0Notify, &xHigherPriorityTaskWoken );
     }
-    HOOK_TRACE_OUT(TRUE);
-    if( xHigherPriorityTaskWoken != pdFALSE )
-    {
+    if( xHigherPriorityTaskWoken != pdFALSE ) {
         taskYIELD();
     }
+    HOOK_TRACE_OUT(TRUE);
 }
 
 //*****************************************************************************
@@ -455,7 +364,17 @@ void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
 void __attribute__((__interrupt__, auto_psv)) _DMA1Interrupt(void)
 {
     HOOK_TRACE_IN(CTX_DMA1_ISR, TRUE);
-    PrvAdc_ProcessVmon(VmonDmaBuffer);
+    if(VmonDmaBuffer == 0) {
+        // Process BufferA
+        Vmon_V[VMON1] = (Vmon_BufferA[0][VMON1] + Vmon_BufferA[1][VMON1]) >> 1;
+        Vmon_V[VMON2] = (Vmon_BufferA[0][VMON2] + Vmon_BufferA[1][VMON2]) >> 1;
+        Vmon_V[VMON3] = (Vmon_BufferA[0][VMON3] + Vmon_BufferA[1][VMON3]) >> 1;
+    } else {
+        // Process BufferB
+        Vmon_V[VMON1] = (Vmon_BufferB[0][VMON1] + Vmon_BufferB[1][VMON1]) >> 1;
+        Vmon_V[VMON2] = (Vmon_BufferB[0][VMON2] + Vmon_BufferB[1][VMON2]) >> 1;
+        Vmon_V[VMON3] = (Vmon_BufferB[0][VMON3] + Vmon_BufferB[1][VMON3]) >> 1;
+    }
     VmonDmaBuffer ^= 1;
     IFS0bits.DMA1IF = CLEAR;
     HOOK_TRACE_OUT(TRUE);

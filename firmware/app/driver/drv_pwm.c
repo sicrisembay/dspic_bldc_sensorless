@@ -69,7 +69,7 @@ void DrvPwm_Init(void)
         PWM1CON2bits.SEVOPS = 0;        // Event Trigger Post scaler is 1:1 (Trigger ADC at configPWM_FREQ_HZ)
         PWM1CON2bits.IUE = 0;           // Updates are synchronized to the PWM time base
         PWM1CON2bits.OSYNC = 1;         // Output overrides are synchronized to the PWM time base
-        PWM1CON2bits.UDIS = 1;          // Updates from duty cycle and period buffer are enabled
+        PWM1CON2bits.UDIS = 0;          // Updates from duty cycle and period buffer are enabled
 
         /*
          * Dead time Setting

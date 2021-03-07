@@ -41,7 +41,7 @@
  * 
  * The value of the tag byte for a command packet.
  */
-#define TAG_CMD                 (0xff)
+#define TAG_CMD                         (0xff)
 
 
 /*!
@@ -49,7 +49,7 @@
  * 
  * The value of the tag byte for a status packet.
  */
-#define TAG_STATUS              (0xfe)
+#define TAG_STATUS                      (0xfe)
 
 
 /*!
@@ -57,7 +57,7 @@
  * 
  * The value of the tag byte for a real-time stream data packet.
  */
-#define TAG_DATA                (0xfd)
+#define TAG_DATA                        (0xfd)
 
 
 /*!
@@ -65,8 +65,13 @@
  * 
  * The value of the tag byte for a log packet.
  */
-#define TAG_LOG                 (0xfc)
+#define TAG_LOG                         (0xfc)
 
+#define CMD_GET_DATA_ITEMS              (0x20)
+#define CMD_ENABLE_DATA_ITEM            (0x21)
+#define CMD_DISABLE_DATA_ITEM           (0x22)
+#define CMD_START_DATA_STREAM           (0x23)
+#define CMD_STOP_DATA_STREAM            (0x24)
 
 /*!
  * \enum PCINTERFACE_RETVAL
@@ -86,12 +91,8 @@ typedef enum {
  */
 typedef enum {
     DATA_TIME = 0,
-    DATA_CURRENT_ADC_WINDING1,
-    DATA_CURRENT_ADC_WINDING2,
-    DATA_CURRENT_ADC_WINDING3,
-    DATA_VOLTAGE_ADC_WINDING1,
-    DATA_VOLTAGE_ADC_WINDING2,
-    DATA_VOLTAGE_ADC_WINDING3,
+    DATA_CURRENT_ADC_WINDING,
+    DATA_VOLTAGE_ADC_WINDING,
     DATA_CURRENT_A_WINDING1,
     DATA_CURRENT_A_WINDING2,
     DATA_CURRENT_A_WINDING3,

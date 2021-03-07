@@ -46,7 +46,6 @@ typedef enum
     CTX_QEI_ISR,
     CTX_U1RX_ISR,
     CTX_U1TX_ISR,
-    CTX_ENC_TWO_ISR,
 
     CTX_TASK_TEST,
     CTX_TASK_SERVO_CURRENT,

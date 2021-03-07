@@ -59,7 +59,7 @@ typedef enum
  */
 void DrvAdc_Init(void);
 void DrvAdc_SetCurrentControlHandlerOne(TaskHandle_t tskHandle);
-fractional DrvAdc_GetImonAdcValue(IMON_CH_T chIdx);
+UNSIGNED16_T DrvAdc_GetImonAdcValue(IMON_CH_T chIdx);
 UNSIGNED16_T DrvAdc_GetVmonAdcValue(VMON_CH_T chIdx);
 
 #endif // End DRV_ADC_H
