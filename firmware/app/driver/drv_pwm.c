@@ -134,8 +134,8 @@ void DrvPwm_Init(void)
         /*
          * ADC Event Trigger
          */
-        P1SECMPbits.SEVTDIR = 1;            // Special Event Trigger will occur when the PWM time base is counting down
-        P1SECMPbits.SEVTCMP = PWM_PERIOD;   // Special Event Compare Value
+        P1SECMPbits.SEVTDIR = 1;        // Special Event Trigger will occur when the PWM time base is counting down
+        P1SECMPbits.SEVTCMP = 0;        // Special Event Compare Value
 
         /*
          * PWM Duty Cycle
