@@ -2,6 +2,8 @@
  * \file drv_pwm.c
  */
 
+#include <dsp.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -12,6 +14,7 @@
 // Private definitions.
 //=================================================================================================
 static BOOLEAN_T bInit = FALSE;
+static UNSIGNED16_T u16_dutyCycle = 0;
 
 //=================================================================================================
 // Private member declarations.
@@ -121,9 +124,9 @@ void DrvPwm_Init(void)
         P1OVDCONbits.POVD3L = 1;
         P1OVDCONbits.POVD3H = 1;
         // Override states (High side = INACTIVE; Low side = ACTIVE)
-        P1OVDCONbits.POUT1L = ACTIVE;
-        P1OVDCONbits.POUT2L = ACTIVE;
-        P1OVDCONbits.POUT3L = ACTIVE;
+        P1OVDCONbits.POUT1L = INACTIVE;
+        P1OVDCONbits.POUT2L = INACTIVE;
+        P1OVDCONbits.POUT3L = INACTIVE;
         P1OVDCONbits.POUT1H = INACTIVE;
         P1OVDCONbits.POUT2H = INACTIVE;
         P1OVDCONbits.POUT3H = INACTIVE;
@@ -148,5 +151,131 @@ void DrvPwm_Init(void)
 
         // Enable
         P1TCONbits.PTEN = SET;
+    }
+}
+
+void DrvPwm_UpdateDutyCycle(UNSIGNED16_T dutyCycle)
+{
+    if(dutyCycle <= PWM_PERIOD) {
+        u16_dutyCycle = dutyCycle;
+    }
+}
+
+void DrvPwm_UpdateCommutation(UNSIGNED16_T sectorNumber)
+{
+    switch(sectorNumber) {
+        case 0: {
+            /* Winding A */
+            P1DC1 = u16_dutyCycle;
+            P1OVDCONbits.POVD1L = 1;
+            P1OVDCONbits.POVD1H = 1;
+            /* Winding B */
+            P1DC2 = 0;
+            P1OVDCONbits.POVD2L = 1;
+            P1OVDCONbits.POVD2H = 1;
+            /* Winding C (Hi-Z) */
+            P1DC3 = 0;
+            P1OVDCONbits.POVD3L = 0;
+            P1OVDCONbits.POVD3H = 0;
+            break;
+        }
+        case 1: {
+            /* Winding A */
+            P1DC1 = u16_dutyCycle;
+            P1OVDCONbits.POVD1L = 1;
+            P1OVDCONbits.POVD1H = 1;
+            /* Winding B */
+            P1DC2 = 0;
+            P1OVDCONbits.POVD2L = 0;
+            P1OVDCONbits.POVD2H = 0;
+            /* Winding C */
+            P1DC3 = 0;
+            P1OVDCONbits.POVD3L = 1;
+            P1OVDCONbits.POVD3H = 1;
+            break;
+        }
+        case 2: {
+            /* Winding A */
+            P1DC1 = 0;
+            P1OVDCONbits.POVD1L = 0;
+            P1OVDCONbits.POVD1H = 0;
+            /* Winding B */
+            P1DC2 = u16_dutyCycle;
+            P1OVDCONbits.POVD2L = 1;
+            P1OVDCONbits.POVD2H = 1;
+            /* Winding C */
+            P1DC3 = 0;
+            P1OVDCONbits.POVD3L = 1;
+            P1OVDCONbits.POVD3H = 1;
+            break;
+        }
+        case 3: {
+            /* Winding A */
+            P1DC1 = 0;
+            P1OVDCONbits.POVD1L = 1;
+            P1OVDCONbits.POVD1H = 1;
+            /* Winding B */
+            P1DC2 = u16_dutyCycle;
+            P1OVDCONbits.POVD2L = 1;
+            P1OVDCONbits.POVD2H = 1;
+            /* Winding C */
+            P1DC3 = 0;
+            P1OVDCONbits.POVD3L = 0;
+            P1OVDCONbits.POVD3H = 0;
+            break;
+        }
+        case 4: {
+            /* Winding A */
+            P1DC1 = 0;
+            P1OVDCONbits.POVD1L = 1;
+            P1OVDCONbits.POVD1H = 1;
+            /* Winding B */
+            P1DC2 = 0;
+            P1OVDCONbits.POVD2L = 0;
+            P1OVDCONbits.POVD2H = 0;
+            /* Winding C */
+            P1DC3 = u16_dutyCycle;
+            P1OVDCONbits.POVD3L = 1;
+            P1OVDCONbits.POVD3H = 1;
+            break;
+        }
+        case 5: {
+            /* Winding A*/
+            P1DC1 = 0;
+            P1OVDCONbits.POVD1L = 0;
+            P1OVDCONbits.POVD1H = 0;
+            /* Winding B */
+            P1DC2 = 0;
+            P1OVDCONbits.POVD2L = 1;
+            P1OVDCONbits.POVD2H = 1;
+            /* Winding C */
+            P1DC3 = u16_dutyCycle;
+            P1OVDCONbits.POVD3L = 1;
+            P1OVDCONbits.POVD3H = 1;
+            break;
+        }
+        default: {
+            /*
+             * Invalid sector
+             * Override all pins to inactive
+             */
+            P1DC1 = 0;
+            P1DC2  = 0;
+            P1DC3 = 0;
+            P1OVDCONbits.POVD1L = 0;
+            P1OVDCONbits.POVD1H = 0;
+            P1OVDCONbits.POVD2L = 0;
+            P1OVDCONbits.POVD2H = 0;
+            P1OVDCONbits.POVD3L = 0;
+            P1OVDCONbits.POVD3H = 0;
+
+            P1OVDCONbits.POUT1L = INACTIVE;
+            P1OVDCONbits.POUT2L = INACTIVE;
+            P1OVDCONbits.POUT3L = INACTIVE;
+            P1OVDCONbits.POUT1H = INACTIVE;
+            P1OVDCONbits.POUT2H = INACTIVE;
+            P1OVDCONbits.POUT3H = INACTIVE;
+            break;
+        }
     }
 }

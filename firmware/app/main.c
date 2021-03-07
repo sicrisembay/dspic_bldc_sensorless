@@ -97,6 +97,8 @@ static void PrvConfigurePin(void)
 static void PrvTest(void *pvParam)
 {
     UNSIGNED16_T i = 0;
+    UNSIGNED16_T j = 0;
+    UNSIGNED16_T sector = 0;
     TickType_t xLastExecutionTime;
     xLastExecutionTime = xTaskGetTickCount();
 
@@ -104,17 +106,33 @@ static void PrvTest(void *pvParam)
     
     while(1)
     {
-        vTaskDelayUntil( &xLastExecutionTime, 10);
+        vTaskDelayUntil( &xLastExecutionTime, 1);
         USER_LED_1 = BTN1;
         USER_LED_2 = BTN2;
+        if(BTN1) {
+            DrvPwm_UpdateDutyCycle((20 * PWM_PERIOD)/100);
+        } else if(BTN2) {
+            DrvPwm_UpdateDutyCycle((10 * PWM_PERIOD)/100);
+        } else {
+            DrvPwm_UpdateDutyCycle(0);
+        }
         i++;
-        if(i >= 100) {
+        if(i >= 1000) {
             i = 0;
             if(USER_LED_4) {
                 USER_LED_4 = CLEAR;
             } else {
                 USER_LED_4 = SET;
             }
+        }
+        j++;
+        if(j >= 28) {
+            j = 0;
+            sector++;
+            if(sector > 5) {
+                sector = 0;
+            }
+            DrvPwm_UpdateCommutation(sector);
         }
     }
 }

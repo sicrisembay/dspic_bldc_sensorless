@@ -32,18 +32,12 @@
 #define PWM_MAX_DUTY_VAL        (UNSIGNED16_T)((configCPU_CLOCK_HZ/((UNSIGNED32_T)configPWM_FREQ_HZ * configPWM_TMR_PRESCALER))-2*DEAD_TIME) // TODO: Investigate the MAX PWM.
 
 /*!
- * \def PWM_SET_DUTY()
- */
-#define PWM_SET_DUTY(u, v, w)   \
-    P1DC1 = u; \
-    P1DC2 = v; \
-    P1DC3 = w
-
-/*!
  * \brief  This function initializes <add here>
  * \param  None
  * \return None
  */
 void DrvPwm_Init(void);
+void DrvPwm_UpdateDutyCycle(UNSIGNED16_T dutyCycle);
+void DrvPwm_UpdateCommutation(UNSIGNED16_T sectorNumber);
 
 #endif // End DRV_TIMER_H
