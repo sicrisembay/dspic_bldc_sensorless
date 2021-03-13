@@ -39,7 +39,7 @@ static UNSIGNED16_T u16_dutyCycle = 0;
 //=================================================================================================
 // Private member declarations.
 //=================================================================================================
-volatile UNSIGNED16_T currentSector = 0;
+volatile UNSIGNED16_T curSector = 0;
 volatile BOOLEAN_T b_positive_duty_cycle = TRUE;
 
 //=================================================================================================
@@ -196,7 +196,7 @@ void DrvPwm_UpdateDutyCycle(_Q16 q16_duty_cycle)
 
 void DrvPwm_UpdateCommutation(UNSIGNED16_T sectorNumber)
 {
-    currentSector = sectorNumber;
+    curSector = sectorNumber;
     switch(sectorNumber) {
         case 0: {
             /* Winding A */

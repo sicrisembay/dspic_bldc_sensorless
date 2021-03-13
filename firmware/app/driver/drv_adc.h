@@ -19,22 +19,21 @@
 
 typedef enum
 {
-    BEMF,   // Note: ADC1 CH0 can connect to VMON1(AN10), VMON2(AN11), VMON3 (AN12)
-            // ADC CH0 is connected to non-driven phase (determined by commutation sector)
-    IMON1,
-    IMON2,
-    IMON3,
-    NUM_IMON_CH
-}IMON_CH_T;
+    ADC_BEMF = 0,   // Note: ADC1 CH0 can connect to VMON1(AN10), VMON2(AN11), VMON3 (AN12)
+                    // ADC CH0 is connected to non-driven phase (determined by commutation sector)
+    ADC_IMON1,
+    ADC_IMON2,
+    ADC_IMON3,
+    N_ADC_ONE_CHANNEL
+} ADC_ONE_CHANNEL_T;
 
 typedef enum
 {
-    VMON1 = 0,
-    VMON2,
-    VMON3,
-    VMON4,
-    NUM_VMON_CH
-}VMON_CH_T;
+    ADC_VMON1 = 0,
+    ADC_VMON2,
+    ADC_VMON3,
+    N_ADC_TWO_CHANNEL
+} ADC_TWO_CHANNEL_T;
 
 
 /*!
@@ -48,19 +47,20 @@ typedef enum
  * completion of every 4 samples/conversion. DMA buffer is allocated 4 words 
  * to each 4 analog input.
  * 
- * ADC2 is used to measure VMON1 (AN10), VMON2 (AN11), VMON3 (AN12), 
- * VMON4 (AN13) using MUXA for sequential sampling on CH0.  ADC2 samples 
- * multiple channels individually in sequence, VMON1, VMON2, VMON3, VMON4.  
+ * ADC2 is used to measure VMON1 (AN10), VMON2 (AN11), VMON3 (AN12) 
+ * using MUXA for sequential sampling on CH0.  ADC2 samples 
+ * multiple channels individually in sequence, VMON1, VMON2, VMON3.  
  * ADC2 format is 10bit unsigned integer.  ADC2 converter voltage reference is
- * AVdd and AVss.  DMA buffer is allocated 4 words to each 4 analog input and
- * increments DMA address after completion of every 4 samples/conversion. * 
+ * AVdd and AVss.  DMA buffer is allocated 2 words to each 3 analog input and
+ * increments DMA address after completion of every 3 samples/conversion. * 
  *
  * \param  None
  * \return None
  */
 void DrvAdc_Init(void);
+
 void DrvAdc_SetCurrentControlHandlerOne(TaskHandle_t tskHandle);
-UNSIGNED16_T DrvAdc_GetImonAdcValue(IMON_CH_T chIdx);
-UNSIGNED16_T DrvAdc_GetVmonAdcValue(VMON_CH_T chIdx);
+UNSIGNED16_T DrvAdc_GetAdcOneValue(ADC_ONE_CHANNEL_T chIdx);
+UNSIGNED16_T DrvAdc_GetAdcTwoValue(ADC_TWO_CHANNEL_T chIdx);
 
 #endif // End DRV_ADC_H

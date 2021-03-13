@@ -288,24 +288,27 @@ static void PrvPcInf_TskSendData(void *pvParam)
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
             }
             if(((u16PcInfDataFlag >> DATA_CURRENT_ADC_WINDING) & 0x01) == 0x01) {
-                u16TempVal = DrvAdc_GetImonAdcValue(IMON1);
+                u16TempVal = DrvAdc_GetAdcOneValue(ADC_IMON1);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
-                u16TempVal = DrvAdc_GetImonAdcValue(IMON2);
+                u16TempVal = DrvAdc_GetAdcOneValue(ADC_IMON2);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
-                u16TempVal = DrvAdc_GetImonAdcValue(IMON3);
+                u16TempVal = DrvAdc_GetAdcOneValue(ADC_IMON3);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
             }
             if(((u16PcInfDataFlag >> DATA_VOLTAGE_ADC_WINDING) & 0x01) == 0x01) {
-                u16TempVal = DrvAdc_GetVmonAdcValue(VMON1);
+                u16TempVal = DrvAdc_GetAdcOneValue(ADC_BEMF);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
-                u16TempVal = DrvAdc_GetVmonAdcValue(VMON2);
+                u16TempVal = DrvAdc_GetAdcTwoValue(ADC_VMON1);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
-                u16TempVal = DrvAdc_GetVmonAdcValue(VMON3);
+                u16TempVal = DrvAdc_GetAdcTwoValue(ADC_VMON2);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
+                u16TempVal = DrvAdc_GetAdcTwoValue(ADC_VMON3);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
             }

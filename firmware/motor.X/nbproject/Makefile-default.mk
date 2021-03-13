@@ -95,230 +95,230 @@ MP_LINKER_FILE_OPTION=,--script=p33FJ128MC706A.gld
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/_ext/566887654/bldc.o: ../app/bldc/bldc.c  .generated_files/2f9ef175e7232e594b632d80c63c70fdb915c61c.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/566887654/bldc.o: ../app/bldc/bldc.c  .generated_files/2dc07e436ff1fc4571c755ff627c031b8e47e84e.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/566887654" 
 	@${RM} ${OBJECTDIR}/_ext/566887654/bldc.o.d 
 	@${RM} ${OBJECTDIR}/_ext/566887654/bldc.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/bldc/bldc.c  -o ${OBJECTDIR}/_ext/566887654/bldc.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/566887654/bldc.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/618841211/drv_timer.o: ../app/driver/drv_timer.c  .generated_files/bd63178bedbab2eb1fe938c4aa4882a63f013931.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/618841211/drv_timer.o: ../app/driver/drv_timer.c  .generated_files/2752660718234cbf822ba2734d7104a67a8a1199.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/618841211" 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_timer.o.d 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_timer.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/driver/drv_timer.c  -o ${OBJECTDIR}/_ext/618841211/drv_timer.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/618841211/drv_timer.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/618841211/drv_adc.o: ../app/driver/drv_adc.c  .generated_files/a432bafe8804aceefb63a949c747a4524bef28ee.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/618841211/drv_adc.o: ../app/driver/drv_adc.c  .generated_files/9b73b736944fc29814ff04381aa5d3a1f59d8a53.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/618841211" 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_adc.o.d 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_adc.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/driver/drv_adc.c  -o ${OBJECTDIR}/_ext/618841211/drv_adc.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/618841211/drv_adc.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/618841211/drv_pwm.o: ../app/driver/drv_pwm.c  .generated_files/c1687719c95f523d11bde5451d0def7ae140e38a.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/618841211/drv_pwm.o: ../app/driver/drv_pwm.c  .generated_files/6bd94292b7c79a6b4ecf9dc0233a86c653f31c6b.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/618841211" 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_pwm.o.d 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_pwm.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/driver/drv_pwm.c  -o ${OBJECTDIR}/_ext/618841211/drv_pwm.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/618841211/drv_pwm.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/618841211/drv_uart.o: ../app/driver/drv_uart.c  .generated_files/5d209b3e2714388646cac3bc8f1e7ae7505d2a39.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/618841211/drv_uart.o: ../app/driver/drv_uart.c  .generated_files/fef425e5a207b44cdf680bef751d1b93ab2b9ae2.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/618841211" 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_uart.o.d 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_uart.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/driver/drv_uart.c  -o ${OBJECTDIR}/_ext/618841211/drv_uart.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/618841211/drv_uart.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1354880047/hook.o: ../app/freertos/hook.c  .generated_files/eb70d935fbf18ca80eb093d047e22a911002f7df.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1354880047/hook.o: ../app/freertos/hook.c  .generated_files/b01a6da54e457f8dcd6f8546f30405c40290d659.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1354880047" 
 	@${RM} ${OBJECTDIR}/_ext/1354880047/hook.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1354880047/hook.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/freertos/hook.c  -o ${OBJECTDIR}/_ext/1354880047/hook.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1354880047/hook.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/290104761/pc_interface.o: ../app/pcIntf/pc_interface.c  .generated_files/a1c58b23231e5ba680fe7678dae5a2da46c96bc7.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/290104761/pc_interface.o: ../app/pcIntf/pc_interface.c  .generated_files/c6ce8f775e75658d5a0dfe7b026bf65900efb5e6.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/290104761" 
 	@${RM} ${OBJECTDIR}/_ext/290104761/pc_interface.o.d 
 	@${RM} ${OBJECTDIR}/_ext/290104761/pc_interface.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/pcIntf/pc_interface.c  -o ${OBJECTDIR}/_ext/290104761/pc_interface.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/290104761/pc_interface.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/998514728/util_filter.o: ../app/utility/filter/util_filter.c  .generated_files/982b925aa0bc7257a3c6272cca2d5f1cd91e7596.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/998514728/util_filter.o: ../app/utility/filter/util_filter.c  .generated_files/505a287083c2a57b193cf9c9c1033c6b76ab30f8.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/998514728" 
 	@${RM} ${OBJECTDIR}/_ext/998514728/util_filter.o.d 
 	@${RM} ${OBJECTDIR}/_ext/998514728/util_filter.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/utility/filter/util_filter.c  -o ${OBJECTDIR}/_ext/998514728/util_filter.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/998514728/util_filter.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/255416751/util_trace.o: ../app/utility/util_trace.c  .generated_files/338360270c7e27351d605bf90f4340861cf07449.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/255416751/util_trace.o: ../app/utility/util_trace.c  .generated_files/9a5c3275906a8d10ac8238f770d6646c3840ac63.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/255416751" 
 	@${RM} ${OBJECTDIR}/_ext/255416751/util_trace.o.d 
 	@${RM} ${OBJECTDIR}/_ext/255416751/util_trace.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/utility/util_trace.c  -o ${OBJECTDIR}/_ext/255416751/util_trace.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/255416751/util_trace.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1360919890/main.o: ../app/main.c  .generated_files/35c68860cc33f757fa60ad35e672f21ff00f1084.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1360919890/main.o: ../app/main.c  .generated_files/788be513eb1bc48287daa8828367480479dfba5c.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1360919890" 
 	@${RM} ${OBJECTDIR}/_ext/1360919890/main.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360919890/main.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/main.c  -o ${OBJECTDIR}/_ext/1360919890/main.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1360919890/main.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1859827547/heap_1.o: ../third_party/FreeRTOS/portable/MemMang/heap_1.c  .generated_files/f6290f429f7edb89254c5df860bb59cf52e1a41.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1859827547/heap_1.o: ../third_party/FreeRTOS/portable/MemMang/heap_1.c  .generated_files/731fc6964e16eec29973b2edc92360a592228854.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1859827547" 
 	@${RM} ${OBJECTDIR}/_ext/1859827547/heap_1.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1859827547/heap_1.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/portable/MemMang/heap_1.c  -o ${OBJECTDIR}/_ext/1859827547/heap_1.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1859827547/heap_1.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/485308804/port.o: ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/port.c  .generated_files/8041b7ad2fa314fb75ec5c843945d0a7b033d632.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/485308804/port.o: ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/port.c  .generated_files/777dc2b4e85ad5167e684f5ef8c67db658e8419d.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/485308804" 
 	@${RM} ${OBJECTDIR}/_ext/485308804/port.o.d 
 	@${RM} ${OBJECTDIR}/_ext/485308804/port.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/port.c  -o ${OBJECTDIR}/_ext/485308804/port.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/485308804/port.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/croutine.o: ../third_party/FreeRTOS/croutine.c  .generated_files/7ad2245fc0dbf9f44c16732562f7aa206a2a0f7f.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/croutine.o: ../third_party/FreeRTOS/croutine.c  .generated_files/e8a6a9b4b79af4d456f50061359aec9e99c28363.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/croutine.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/croutine.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/croutine.c  -o ${OBJECTDIR}/_ext/1051866110/croutine.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/croutine.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/event_groups.o: ../third_party/FreeRTOS/event_groups.c  .generated_files/92e4bad138535642fb6adc1e9b4999ded8e1d00a.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/event_groups.o: ../third_party/FreeRTOS/event_groups.c  .generated_files/acefc48b8cc3685f49e5540f195e166ca22a52aa.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/event_groups.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/event_groups.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/event_groups.c  -o ${OBJECTDIR}/_ext/1051866110/event_groups.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/event_groups.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/list.o: ../third_party/FreeRTOS/list.c  .generated_files/b7df4815ebf8b296954cba1d53d98802bf092b9b.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/list.o: ../third_party/FreeRTOS/list.c  .generated_files/6bb757a681b227d1d466fda891684789aec43042.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/list.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/list.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/list.c  -o ${OBJECTDIR}/_ext/1051866110/list.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/list.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/queue.o: ../third_party/FreeRTOS/queue.c  .generated_files/8c14edb50d11a019d2d9f1434546f697d7b8a620.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/queue.o: ../third_party/FreeRTOS/queue.c  .generated_files/83bfec79fb075b2bb646fc055146b9f557de0c4c.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/queue.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/queue.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/queue.c  -o ${OBJECTDIR}/_ext/1051866110/queue.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/queue.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/stream_buffer.o: ../third_party/FreeRTOS/stream_buffer.c  .generated_files/d2b0d461a6fd84d8e772b7ec3ef3c64051f8eda4.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/stream_buffer.o: ../third_party/FreeRTOS/stream_buffer.c  .generated_files/ffc3bd927968690c083692dc26eb19f43c0051a6.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/stream_buffer.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/stream_buffer.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/stream_buffer.c  -o ${OBJECTDIR}/_ext/1051866110/stream_buffer.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/stream_buffer.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/tasks.o: ../third_party/FreeRTOS/tasks.c  .generated_files/8e0e2004b95cc71c088a3b1a1d7c3e87e36e0f53.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/tasks.o: ../third_party/FreeRTOS/tasks.c  .generated_files/a42bb29c689c4cc13e60bdf6852fbf8b07553c55.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/tasks.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/tasks.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/tasks.c  -o ${OBJECTDIR}/_ext/1051866110/tasks.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/tasks.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/timers.o: ../third_party/FreeRTOS/timers.c  .generated_files/e976040c30b162b25bb32a971f831814b4010f65.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/timers.o: ../third_party/FreeRTOS/timers.c  .generated_files/284d9927b808bac172cb29fc15ceb3cfbd1fc307.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/timers.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/timers.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/timers.c  -o ${OBJECTDIR}/_ext/1051866110/timers.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/timers.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1    -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
 else
-${OBJECTDIR}/_ext/566887654/bldc.o: ../app/bldc/bldc.c  .generated_files/54f0c5cfb755e78578fcbbaef7cd0f755b983756.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/566887654/bldc.o: ../app/bldc/bldc.c  .generated_files/65180f647c86f8740c055ec5fa3ad2c64a1c4da8.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/566887654" 
 	@${RM} ${OBJECTDIR}/_ext/566887654/bldc.o.d 
 	@${RM} ${OBJECTDIR}/_ext/566887654/bldc.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/bldc/bldc.c  -o ${OBJECTDIR}/_ext/566887654/bldc.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/566887654/bldc.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/618841211/drv_timer.o: ../app/driver/drv_timer.c  .generated_files/a58a4628371c8a62df2d5fefa536a38434089db5.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/618841211/drv_timer.o: ../app/driver/drv_timer.c  .generated_files/cf7f03afe0a9cc2d1cb363a883e5750a1cf9fdaa.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/618841211" 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_timer.o.d 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_timer.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/driver/drv_timer.c  -o ${OBJECTDIR}/_ext/618841211/drv_timer.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/618841211/drv_timer.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/618841211/drv_adc.o: ../app/driver/drv_adc.c  .generated_files/ac9403baa6d6778dd6e51ebe6aff7e44342419a8.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/618841211/drv_adc.o: ../app/driver/drv_adc.c  .generated_files/5a8ab1ef77925d799c2b7e8e7426cf68906c658b.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/618841211" 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_adc.o.d 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_adc.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/driver/drv_adc.c  -o ${OBJECTDIR}/_ext/618841211/drv_adc.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/618841211/drv_adc.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/618841211/drv_pwm.o: ../app/driver/drv_pwm.c  .generated_files/78e9fe05677f2ae66e9a3149718abb2c700abc98.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/618841211/drv_pwm.o: ../app/driver/drv_pwm.c  .generated_files/52e83a3220323268be77fa60040a685e17fae39.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/618841211" 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_pwm.o.d 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_pwm.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/driver/drv_pwm.c  -o ${OBJECTDIR}/_ext/618841211/drv_pwm.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/618841211/drv_pwm.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/618841211/drv_uart.o: ../app/driver/drv_uart.c  .generated_files/c3f5ecd265946324de9867cbde8cf4eb3e79a504.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/618841211/drv_uart.o: ../app/driver/drv_uart.c  .generated_files/fd3e20586e990af3880095187a1d7e40aaadd3e0.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/618841211" 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_uart.o.d 
 	@${RM} ${OBJECTDIR}/_ext/618841211/drv_uart.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/driver/drv_uart.c  -o ${OBJECTDIR}/_ext/618841211/drv_uart.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/618841211/drv_uart.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1354880047/hook.o: ../app/freertos/hook.c  .generated_files/9df7486069d01eb54e91b41f1a5ec9289b7347bc.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1354880047/hook.o: ../app/freertos/hook.c  .generated_files/b4e2da6453ebeac01104435089c171d1fc9e8541.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1354880047" 
 	@${RM} ${OBJECTDIR}/_ext/1354880047/hook.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1354880047/hook.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/freertos/hook.c  -o ${OBJECTDIR}/_ext/1354880047/hook.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1354880047/hook.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/290104761/pc_interface.o: ../app/pcIntf/pc_interface.c  .generated_files/eaaea2192a8f90c85dd5b354db7e6347412363b9.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/290104761/pc_interface.o: ../app/pcIntf/pc_interface.c  .generated_files/68559e79a7ec77bba22f5cf63228d4ee1ad9bcb2.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/290104761" 
 	@${RM} ${OBJECTDIR}/_ext/290104761/pc_interface.o.d 
 	@${RM} ${OBJECTDIR}/_ext/290104761/pc_interface.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/pcIntf/pc_interface.c  -o ${OBJECTDIR}/_ext/290104761/pc_interface.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/290104761/pc_interface.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/998514728/util_filter.o: ../app/utility/filter/util_filter.c  .generated_files/4e9cd0060fd07c05b0e9333228fd1fb0060fafd1.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/998514728/util_filter.o: ../app/utility/filter/util_filter.c  .generated_files/d912039c83304d7311435eb42b49d46639ecb269.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/998514728" 
 	@${RM} ${OBJECTDIR}/_ext/998514728/util_filter.o.d 
 	@${RM} ${OBJECTDIR}/_ext/998514728/util_filter.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/utility/filter/util_filter.c  -o ${OBJECTDIR}/_ext/998514728/util_filter.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/998514728/util_filter.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/255416751/util_trace.o: ../app/utility/util_trace.c  .generated_files/b2f6dda27916a703dce06624dbed0ac8edb92eab.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/255416751/util_trace.o: ../app/utility/util_trace.c  .generated_files/2947093cb4fef053859c261dbb678272b6676e14.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/255416751" 
 	@${RM} ${OBJECTDIR}/_ext/255416751/util_trace.o.d 
 	@${RM} ${OBJECTDIR}/_ext/255416751/util_trace.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/utility/util_trace.c  -o ${OBJECTDIR}/_ext/255416751/util_trace.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/255416751/util_trace.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1360919890/main.o: ../app/main.c  .generated_files/d7b7ad27ad7e6b6c1bbb53f986b4ad29964133a3.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1360919890/main.o: ../app/main.c  .generated_files/6fdc2c2e40b75368a7d8fe79c67e986114e37258.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1360919890" 
 	@${RM} ${OBJECTDIR}/_ext/1360919890/main.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1360919890/main.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../app/main.c  -o ${OBJECTDIR}/_ext/1360919890/main.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1360919890/main.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1859827547/heap_1.o: ../third_party/FreeRTOS/portable/MemMang/heap_1.c  .generated_files/7c0bf92db60e66a2fa9b1860975d210fea17bd03.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1859827547/heap_1.o: ../third_party/FreeRTOS/portable/MemMang/heap_1.c  .generated_files/4bdc40468b043e9b17841b71b727af88ddf848d1.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1859827547" 
 	@${RM} ${OBJECTDIR}/_ext/1859827547/heap_1.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1859827547/heap_1.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/portable/MemMang/heap_1.c  -o ${OBJECTDIR}/_ext/1859827547/heap_1.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1859827547/heap_1.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/485308804/port.o: ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/port.c  .generated_files/f88558f063f2848996126eb45fd720ca6922467d.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/485308804/port.o: ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/port.c  .generated_files/9f82951aaeab53644c38b9c3afe2316c0328740a.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/485308804" 
 	@${RM} ${OBJECTDIR}/_ext/485308804/port.o.d 
 	@${RM} ${OBJECTDIR}/_ext/485308804/port.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/port.c  -o ${OBJECTDIR}/_ext/485308804/port.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/485308804/port.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/croutine.o: ../third_party/FreeRTOS/croutine.c  .generated_files/c2856b3799915e2365420d040045015c248a3c5b.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/croutine.o: ../third_party/FreeRTOS/croutine.c  .generated_files/a95075901d6b81d12850e57e9c04fd9ba8dd4946.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/croutine.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/croutine.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/croutine.c  -o ${OBJECTDIR}/_ext/1051866110/croutine.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/croutine.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/event_groups.o: ../third_party/FreeRTOS/event_groups.c  .generated_files/e4f924f48c7d5a38d71ea02dd92d9a4218f10d34.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/event_groups.o: ../third_party/FreeRTOS/event_groups.c  .generated_files/fe538acf9a06200148ce2c510add1de5cd27a1d8.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/event_groups.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/event_groups.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/event_groups.c  -o ${OBJECTDIR}/_ext/1051866110/event_groups.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/event_groups.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/list.o: ../third_party/FreeRTOS/list.c  .generated_files/a85fe2d9c00a8cb1a3873ebb968340b8b812f5ff.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/list.o: ../third_party/FreeRTOS/list.c  .generated_files/8c74d361f0e996e1bcb7aa27a969dc4cadebcf34.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/list.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/list.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/list.c  -o ${OBJECTDIR}/_ext/1051866110/list.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/list.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/queue.o: ../third_party/FreeRTOS/queue.c  .generated_files/1fc0a187bb67545d4e6b539300759e56b784859.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/queue.o: ../third_party/FreeRTOS/queue.c  .generated_files/baf97dd7a363a6fbc5b035ecca21ddfc49656759.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/queue.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/queue.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/queue.c  -o ${OBJECTDIR}/_ext/1051866110/queue.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/queue.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/stream_buffer.o: ../third_party/FreeRTOS/stream_buffer.c  .generated_files/c5890296ffd0588d1ad92c31733bef73dfeff287.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/stream_buffer.o: ../third_party/FreeRTOS/stream_buffer.c  .generated_files/80eb2b82a8432493817b0ed58001d0460cad7f3b.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/stream_buffer.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/stream_buffer.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/stream_buffer.c  -o ${OBJECTDIR}/_ext/1051866110/stream_buffer.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/stream_buffer.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/tasks.o: ../third_party/FreeRTOS/tasks.c  .generated_files/d4514659fa7066ec6fcece1d22be45df4904fb99.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/tasks.o: ../third_party/FreeRTOS/tasks.c  .generated_files/1d7d1f4c77a27f7dba9151f8f9ab1ecbfd744816.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/tasks.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/tasks.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  ../third_party/FreeRTOS/tasks.c  -o ${OBJECTDIR}/_ext/1051866110/tasks.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/1051866110/tasks.o.d"        -g -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -O0 -I"../app/bldc" -I"../app/driver" -I"../app/pcIntf" -I"../app/utility" -I"../app/utility/filter" -I"../config" -I"../third_party/FreeRTOS/include" -I"../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC" -DMPLAB_DSPIC_PORT -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
-${OBJECTDIR}/_ext/1051866110/timers.o: ../third_party/FreeRTOS/timers.c  .generated_files/c863b1f93c542e3ed23ee3a87fb3ea7fd4497308.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/1051866110/timers.o: ../third_party/FreeRTOS/timers.c  .generated_files/f68ec56cd0f4fce23d94b4a22e26ff020c8a56a9.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/1051866110" 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/timers.o.d 
 	@${RM} ${OBJECTDIR}/_ext/1051866110/timers.o 
@@ -335,14 +335,14 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: assemblePreproc
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o: ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portasm_dsPIC.S  .generated_files/f978c2975b401ad4cc9a954feadbde9f3bc42d40.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o: ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portasm_dsPIC.S  .generated_files/a83a6d63ae1cc09b4e67b6633bc5392f47e3e3d1.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/485308804" 
 	@${RM} ${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o.d 
 	@${RM} ${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o 
 	${MP_CC} $(MP_EXTRA_AS_PRE)  ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portasm_dsPIC.S  -o ${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o.d"  -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -omf=elf -DXPRJ_default=$(CND_CONF)  -legacy-libc  -Wa,-MD,"${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o.asm.d",--defsym=__MPLAB_BUILD=1,--defsym=__ICD2RAM=1,--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,--defsym=__MPLAB_DEBUGGER_PK3=1,-g,--no-relax$(MP_EXTRA_AS_POST)  -mdfp="${DFP_DIR}/xc16"
 	
 else
-${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o: ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portasm_dsPIC.S  .generated_files/be1d53825770939eabcc8666cfe388d6d23ab701.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
+${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o: ../third_party/FreeRTOS/portable/MPLAB/PIC24_dsPIC/portasm_dsPIC.S  .generated_files/c348fcc550439865e56ab03504a1945b06adfa4f.flag .generated_files/35713b39c1b4ae317f752aef53a0b681fac576c7.flag
 	@${MKDIR} "${OBJECTDIR}/_ext/485308804" 
 	@${RM} ${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o.d 
 	@${RM} ${OBJECTDIR}/_ext/485308804/portasm_dsPIC.o 

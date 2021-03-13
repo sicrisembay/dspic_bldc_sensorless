@@ -29,72 +29,70 @@
 static TaskHandle_t xTaskDma0Notify = NULL;
 
 /*!
- * \var fractional Imon_BufferA
+ * \var UNSIGNED16_T adc_one_bufferA
  * Buffer for Peripheral indirect addressing (Scatter/Gather Mode).
  * This is BufferA, one of the two buffers that is used for ping pong DMA
- * operation on ADC peripheral that is used for motor current sensor.
- * The size is 32 bytes (NUM_IMON_CH * NUM_ANALOG_BUFFER_WORDS).
+ * operation on ADC peripheral.
+ * The size is 8 bytes (N_ADC_ONE_CHANNEL * NUM_ANALOG_BUFFER_WORDS).
  */
-volatile fractional Imon_BufferA[NUM_ANALOG_BUFFER_WORDS][NUM_IMON_CH] __attribute__((space(dma), aligned(32)));
+volatile UNSIGNED16_T adc_one_bufferA[NUM_ANALOG_BUFFER_WORDS][N_ADC_ONE_CHANNEL] __attribute__((space(dma), aligned(32)));
 
 /*!
- * \var fractional Imon_BufferB
+ * \var UNSIGNED16_T adc_one_bufferB
  * Buffer for Peripheral indirect addressing (Scatter/Gather Mode).
  * This is BufferB, one of the two buffers that is used for ping pong DMA
  * operation on ADC peripheral that is used for motor current sensor.
- * The size is 32 bytes (NUM_IMON_CH * NUM_ANALOG_BUFFER_WORDS).
+ * The size is 8 bytes (N_ADC_ONE_CHANNEL * NUM_ANALOG_BUFFER_WORDS).
  */
-volatile fractional Imon_BufferB[NUM_ANALOG_BUFFER_WORDS][NUM_IMON_CH] __attribute__((space(dma), aligned(32)));
+volatile UNSIGNED16_T adc_one_bufferB[NUM_ANALOG_BUFFER_WORDS][N_ADC_ONE_CHANNEL] __attribute__((space(dma), aligned(32)));
 
 /*!
- * \var UNSIGNED16_T Vmon_BufferA
+ * \var UNSIGNED16_T adc_two_bufferA
  * Buffer for Register indirect addressing (written in order of conversion)
  * This is BufferA, one of the two buffers that is used for ping pong DMA
  * operation on ADC peripheral that is used for motor terminal voltage sensor.
- * The size is 32 bytes (NUM_VMON_CH * NUM_ANALOG_BUFFER_WORDS).
+ * The size is 6 bytes (N_ADC_TWO_CHANNEL * NUM_ANALOG_BUFFER_WORDS).
  */
-UNSIGNED16_T Vmon_BufferA[NUM_ANALOG_BUFFER_WORDS][NUM_VMON_CH] __attribute__((space(dma), aligned(32)));
+UNSIGNED16_T adc_two_bufferA[NUM_ANALOG_BUFFER_WORDS][N_ADC_TWO_CHANNEL] __attribute__((space(dma), aligned(32)));
 
 /*!
- * \var UNSIGNED16_T Vmon_BufferB
+ * \var UNSIGNED16_T adc_two_bufferB
  * Buffer for Register indirect addressing (written in order of conversion)
  * This is BufferB, one of the two buffers that is used for ping pong DMA
  * operation on ADC peripheral that is used for motor terminal voltage sensor.
- * The size is 32 bytes (NUM_VMON_CH * NUM_ANALOG_BUFFER_WORDS).
+ * The size is 6 bytes (N_ADC_TWO_CHANNEL * NUM_ANALOG_BUFFER_WORDS).
  */
-UNSIGNED16_T Vmon_BufferB[NUM_ANALOG_BUFFER_WORDS][NUM_VMON_CH] __attribute__((space(dma), aligned(32)));
+UNSIGNED16_T adc_two_bufferB[NUM_ANALOG_BUFFER_WORDS][N_ADC_TWO_CHANNEL] __attribute__((space(dma), aligned(32)));
 
 /*!
- * \var UNSIGNED16_T ImonDmaBuffer
+ * \var UNSIGNED16_T AdcOneDmaBuffer
  * This is a flag that indicate which of the two ping-pong buffers is
  * currently used.  This flag is for the motor current sensor.
- * 0: \a Imon_BufferA is active.
- * 1: \a Imon_BufferB is active.
+ * 0: \a adc_one_bufferA is active.
+ * 1: \a adc_one_bufferB is active.
  */
-volatile UNSIGNED16_T ImonDmaBuffer = 0;
+volatile UNSIGNED16_T AdcOneDmaBuffer = 0;
 
 /*!
- * \var UNSIGNED16_T VmonDmaBuffer
+ * \var UNSIGNED16_T AdcTwoDmaBuffer
  * This is a flag that indicate which of the two ping-pong buffers is
  * currently used.  This flag is for the motor terminal voltage sensor.
- * 0: \a Vmon_BufferA is active.
- * 1: \a Vmon_BufferB is active.
+ * 0: \a adc_two_bufferA is active.
+ * 1: \a adc_two_bufferB is active.
  */
-volatile UNSIGNED16_T VmonDmaBuffer = 0;
+volatile UNSIGNED16_T AdcTwoDmaBuffer = 0;
 
 /*!
- * \var fractional Imon_V[NUM_IMON_CH]
- * Motor current ADC in 1.15 Fixed point format.  Update rate
- * is 10kHz.
+ * \var UNSIGNED16_T adc_one_val[N_ADC_ONE_CHANNEL]
+ * ADC One values.  Update rate is 10kHz.
  */
-volatile UNSIGNED16_T Imon_V[NUM_IMON_CH];
+volatile UNSIGNED16_T adc_one_val[N_ADC_ONE_CHANNEL];
 
 /*!
- * \var UNSIGNED16_T Vmon_V
- * Motor terminal voltage data in 1.15 Fixed point format.  
- * Update rate is 2.5kHz.
+ * \var UNSIGNED16_T adc_two_val
+ * ADC One values. Update rate is 3.33kHz.
  */
-volatile UNSIGNED16_T Vmon_V[NUM_VMON_CH];
+volatile UNSIGNED16_T adc_two_val[N_ADC_TWO_CHANNEL];
 
 
 //*****************************************************************************
@@ -154,7 +152,7 @@ void DrvAdc_Init(void)
     AD1CON2bits.VCFG    = 0;        // Converter Voltage Reference (AVdd and AVss)
     AD1CON2bits.CSCNA   = CLEAR;    // Do not scan inputs
     AD1CON2bits.CHPS    = 3;        // Converts CH0, CH1, CH2, CH3
-    AD1CON2bits.SMPI    = (NUM_IMON_CH - 1); // Increments DMA address after completion of
+    AD1CON2bits.SMPI    = (N_ADC_ONE_CHANNEL - 1); // Increments DMA address after completion of
                                             // every 4 samples/conversion
     AD1CON2bits.BUFM    = CLEAR;    // Always starts filling the buffer from the start address
     AD1CON2bits.ALTS    = CLEAR;    // Always uses channel input selects for Sample A
@@ -176,7 +174,7 @@ void DrvAdc_Init(void)
 
 
     // ADC2 ===================================================================
-    // - used to measure VMON1 (AN10), VMON2 (AN11), VMON3 (AN12), VMON4 (AN13)
+    // - used to measure VMON1 (AN10), VMON2 (AN11), VMON3 (AN12)
     // - Sequential sampling using MUXA (CH0)
     AD2CON1bits.ADSIDL  = CLEAR;    // Continue module operation in Idle mode
     AD2CON1bits.ADDMABM = SET;      // DMA buffers are written in order of conversion
@@ -189,7 +187,7 @@ void DrvAdc_Init(void)
     AD2CON2bits.VCFG    = 0;        // Converter Voltage Reference (AVdd and AVss)
     AD2CON2bits.CSCNA   = SET;      // Scan Input Selections for CH0+ during Sample A bit
     AD2CON2bits.CHPS    = 0;        // Convert CH0
-    AD2CON2bits.SMPI    = (NUM_VMON_CH -1); // Increments DMA address after completion of
+    AD2CON2bits.SMPI    = (N_ADC_TWO_CHANNEL -1); // Increments DMA address after completion of
                                             // every 4 samples/conversion
     AD2CON2bits.BUFM    = CLEAR;    // Always starts filling the buffer from the start address
     AD2CON2bits.ALTS    = CLEAR;    // Always uses channel input selects for Sample A
@@ -207,7 +205,6 @@ void DrvAdc_Init(void)
     AD2CSSLbits.CSS10   = 1;        // Enable AN10 for channel scan (VMON1)
     AD2CSSLbits.CSS11   = 1;        // Enable AN11 for channel scan (VMON2)
     AD2CSSLbits.CSS12   = 1;        // Enable AN12 for channel scan (VMON3)
-    AD2CSSLbits.CSS13   = 1;        // Enable AN13 for channel scan (VMON4) 
             
     // Enable ADC =============================================================
     // ADC1
@@ -254,11 +251,11 @@ void DrvAdc_SetCurrentControlHandlerOne(TaskHandle_t tskHandle)
 //!
 //! \return Motor current ADC value
 //*****************************************************************************
-UNSIGNED16_T DrvAdc_GetImonAdcValue(IMON_CH_T chIdx)
+UNSIGNED16_T DrvAdc_GetAdcOneValue(ADC_ONE_CHANNEL_T chIdx)
 {
     UNSIGNED16_T retval = 0;
-    if(chIdx < NUM_IMON_CH) {
-        retval = Imon_V[chIdx];
+    if(chIdx < N_ADC_ONE_CHANNEL) {
+        retval = adc_one_val[chIdx];
     }
     return(retval);
 }
@@ -272,11 +269,11 @@ UNSIGNED16_T DrvAdc_GetImonAdcValue(IMON_CH_T chIdx)
 //!
 //! \return Motor terminal voltage (Vmon) ADC value in 16bit unsigned integer.
 //*****************************************************************************
-UNSIGNED16_T DrvAdc_GetVmonAdcValue(VMON_CH_T chIdx)
+UNSIGNED16_T DrvAdc_GetAdcTwoValue(ADC_TWO_CHANNEL_T chIdx)
 {
     UNSIGNED16_T retval = 0;
-    if(chIdx < NUM_VMON_CH) {
-        retval = Vmon_V[chIdx];
+    if(chIdx < N_ADC_TWO_CHANNEL) {
+        retval = adc_two_val[chIdx];
     }
     return(retval);
 }
@@ -300,25 +297,25 @@ static void PrvAdc_InitDma(void)
 {
     // DMA0 Channel (used for ADC1) ===============================================================
     DMA0CONbits.AMODE   = 0;        // Configure DMA for Register indirect mode with post-increment
-    DMA0CONbits.MODE    = 2;        // Configure DMA for Continuous Ping-Pong mode
+    DMA0CONbits.MODE    = 2;                        // Configure DMA for Continuous Ping-Pong mode
     DMA0PAD = (volatile unsigned int)&ADC1BUF0;     // Point DMA to ADC1BUF0
-    DMA0CNT = 7;                    // 8 DMA request
-    DMA0REQbits.IRQSEL  = 13;       // ADC1 convert Done
-    DMA0STA = __builtin_dmaoffset(Imon_BufferA);
-    DMA0STB = __builtin_dmaoffset(Imon_BufferB);
+    DMA0CNT = (2 * N_ADC_ONE_CHANNEL) - 1;          // number of DMA request
+    DMA0REQbits.IRQSEL  = 13;                       // ADC1 convert Done
+    DMA0STA = __builtin_dmaoffset(adc_one_bufferA);
+    DMA0STB = __builtin_dmaoffset(adc_one_bufferB);
     // Configure interrupt
     IPC1bits.DMA0IP     = configDMA0_INTERRUPT_PRIORITY;
     IFS0bits.DMA0IF     = CLEAR;
     IEC0bits.DMA0IE     = SET;
     
     // DMA1 Channel (used for ADC2) ===============================================================
-    DMA1CONbits.AMODE   = 0;        // Configure DMA for Register indirect mode with post-increment
-    DMA1CONbits.MODE    = 2;        // Configure DMA for Continuous Ping-Pong mode
-    DMA1PAD = (volatile unsigned int)&ADC2BUF0;     // Point DMA to ADC2BUF0
-    DMA1CNT = 7;                    // 8 DMA request
-    DMA1REQbits.IRQSEL  = 21;       // ADC2 Convert Done
-    DMA1STA = __builtin_dmaoffset(Vmon_BufferA);
-    DMA1STB = __builtin_dmaoffset(Vmon_BufferB);
+    DMA1CONbits.AMODE   = 0;                    // Configure DMA for Register indirect mode with post-increment
+    DMA1CONbits.MODE    = 2;                    // Configure DMA for Continuous Ping-Pong mode
+    DMA1PAD = (volatile unsigned int)&ADC2BUF0; // Point DMA to ADC2BUF0
+    DMA1CNT = (2 * N_ADC_TWO_CHANNEL) - 1;      // Number of DMA request
+    DMA1REQbits.IRQSEL  = 21;                   // ADC2 Convert Done
+    DMA1STA = __builtin_dmaoffset(adc_two_bufferA);
+    DMA1STB = __builtin_dmaoffset(adc_two_bufferB);
     // Configure interrupt
     IPC3bits.DMA1IP     = configDMA1_INTERRUPT_PRIORITY;
     IFS0bits.DMA1IF     = CLEAR;
@@ -335,7 +332,9 @@ static void PrvAdc_InitDma(void)
 //! \param  None
 //! \return \c void
 //*****************************************************************************
-extern volatile UNSIGNED16_T currentSector;
+extern volatile UNSIGNED16_T curSector;
+volatile UNSIGNED16_T prevSector = 0xFFFF; /* initialized to something invalid */
+
 void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -343,42 +342,47 @@ void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
     HOOK_TRACE_IN(CTX_DMA0_ISR, TRUE);
     IFS0bits.DMA0IF = CLEAR;
 
-    if(ImonDmaBuffer == 0) {
+    if(AdcOneDmaBuffer == 0) {
         // Process BufferA
-        Imon_V[IMON1] = (Imon_BufferA[0][IMON1] + Imon_BufferA[1][IMON1]) >> 1;
-        Imon_V[IMON2] = (Imon_BufferA[0][IMON2] + Imon_BufferA[1][IMON2]) >> 1;
-        Imon_V[IMON3] = (Imon_BufferA[0][IMON3] + Imon_BufferA[1][IMON3]) >> 1;
-        /// TODO: refactor for better name
-        Imon_V[BEMF] = (Imon_BufferA[0][BEMF] + Imon_BufferA[1][BEMF]) >> 1;
+        adc_one_val[ADC_IMON1] = (adc_one_bufferA[0][ADC_IMON1] + adc_one_bufferA[1][ADC_IMON1]) >> 1;
+        adc_one_val[ADC_IMON2] = (adc_one_bufferA[0][ADC_IMON2] + adc_one_bufferA[1][ADC_IMON2]) >> 1;
+        adc_one_val[ADC_IMON3] = (adc_one_bufferA[0][ADC_IMON3] + adc_one_bufferA[1][ADC_IMON3]) >> 1;
+        adc_one_val[ADC_BEMF] = (adc_one_bufferA[0][ADC_BEMF] + adc_one_bufferA[1][ADC_BEMF]) >> 1;
     } else {
         // Process BufferB
-        Imon_V[IMON1] = (Imon_BufferB[0][IMON1] + Imon_BufferB[1][IMON1]) >> 1;
-        Imon_V[IMON2] = (Imon_BufferB[0][IMON2] + Imon_BufferB[1][IMON2]) >> 1;
-        Imon_V[IMON3] = (Imon_BufferB[0][IMON3] + Imon_BufferB[1][IMON3]) >> 1;
-        /// TODO: refactor for better name
-        Imon_V[BEMF] = (Imon_BufferB[0][BEMF] + Imon_BufferB[1][BEMF]) >> 1;
+        adc_one_val[ADC_IMON1] = (adc_one_bufferB[0][ADC_IMON1] + adc_one_bufferB[1][ADC_IMON1]) >> 1;
+        adc_one_val[ADC_IMON2] = (adc_one_bufferB[0][ADC_IMON2] + adc_one_bufferB[1][ADC_IMON2]) >> 1;
+        adc_one_val[ADC_IMON3] = (adc_one_bufferB[0][ADC_IMON3] + adc_one_bufferB[1][ADC_IMON3]) >> 1;
+        adc_one_val[ADC_BEMF] = (adc_one_bufferB[0][ADC_BEMF] + adc_one_bufferB[1][ADC_BEMF]) >> 1;
     }
-    switch(currentSector) {
-        case 0:
-        case 3: {
-            AD1CHS0bits.CH0SA = 12;  // AN12 (Non-fed is phaseC)
-            break;
+    
+    if(curSector != prevSector) {
+        switch(curSector) {
+            case 0:
+            case 3: {
+                AD1CHS0bits.CH0SA = 12;  // AN12 (Non-fed is phaseC)
+                break;
+            }
+            case 1:
+            case 4: {
+                AD1CHS0bits.CH0SA = 11; // AN11 (Non-fed is phaseB)
+                break;
+            }
+            case 2:
+            case 5: {
+                AD1CHS0bits.CH0SA = 10; // AN10 (Non-fed is phaseA)
+                break;
+            }
+            default: {
+                break;
+            }
         }
-        case 1:
-        case 4: {
-            AD1CHS0bits.CH0SA = 11; // AN11 (Non-fed is phaseB)
-            break;
-        }
-        case 2:
-        case 5: {
-            AD1CHS0bits.CH0SA = 10; // AN10 (Non-fed is phaseA)
-            break;
-        }
-        default: {
-            break;
-        }
+        /// TODO: add flag to indicate sector has changed so we can
+        /// ignore few adc samples of Bemf which is noisy.
     }
-    ImonDmaBuffer ^= 1;
+    prevSector = curSector;
+
+    AdcOneDmaBuffer ^= 1;
 
     if(NULL != xTaskDma0Notify) {
         vTaskNotifyGiveFromISR( xTaskDma0Notify, &xHigherPriorityTaskWoken );
@@ -413,18 +417,18 @@ void __attribute__((__interrupt__, auto_psv)) _ADC2Interrupt(void)
 void __attribute__((__interrupt__, auto_psv)) _DMA1Interrupt(void)
 {
     HOOK_TRACE_IN(CTX_DMA1_ISR, TRUE);
-    if(VmonDmaBuffer == 0) {
+    if(AdcTwoDmaBuffer == 0) {
         // Process BufferA
-        Vmon_V[VMON1] = (Vmon_BufferA[0][VMON1] + Vmon_BufferA[1][VMON1]) >> 1;
-        Vmon_V[VMON2] = (Vmon_BufferA[0][VMON2] + Vmon_BufferA[1][VMON2]) >> 1;
-        Vmon_V[VMON3] = (Vmon_BufferA[0][VMON3] + Vmon_BufferA[1][VMON3]) >> 1;
+        adc_two_val[ADC_VMON1] = (adc_two_bufferA[0][ADC_VMON1] + adc_two_bufferA[1][ADC_VMON1]) >> 1;
+        adc_two_val[ADC_VMON2] = (adc_two_bufferA[0][ADC_VMON2] + adc_two_bufferA[1][ADC_VMON2]) >> 1;
+        adc_two_val[ADC_VMON3] = (adc_two_bufferA[0][ADC_VMON3] + adc_two_bufferA[1][ADC_VMON3]) >> 1;
     } else {
         // Process BufferB
-        Vmon_V[VMON1] = (Vmon_BufferB[0][VMON1] + Vmon_BufferB[1][VMON1]) >> 1;
-        Vmon_V[VMON2] = (Vmon_BufferB[0][VMON2] + Vmon_BufferB[1][VMON2]) >> 1;
-        Vmon_V[VMON3] = (Vmon_BufferB[0][VMON3] + Vmon_BufferB[1][VMON3]) >> 1;
+        adc_two_val[ADC_VMON1] = (adc_two_bufferB[0][ADC_VMON1] + adc_two_bufferB[1][ADC_VMON1]) >> 1;
+        adc_two_val[ADC_VMON2] = (adc_two_bufferB[0][ADC_VMON2] + adc_two_bufferB[1][ADC_VMON2]) >> 1;
+        adc_two_val[ADC_VMON3] = (adc_two_bufferB[0][ADC_VMON3] + adc_two_bufferB[1][ADC_VMON3]) >> 1;
     }
-    VmonDmaBuffer ^= 1;
+    AdcTwoDmaBuffer ^= 1;
     IFS0bits.DMA1IF = CLEAR;
     HOOK_TRACE_OUT(TRUE);
 }
