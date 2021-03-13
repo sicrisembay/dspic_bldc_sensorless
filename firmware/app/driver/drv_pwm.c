@@ -8,14 +8,39 @@
 #include "global_def.h"
 #include "drv_pwm.h"
 
+/*!
+ * \def configPWM_TMR_PRESCALER
+ */
+#define configPWM_TMR_PRESCALER (1)
+
+/*!
+ * \def PWM_PERIOD
+ */
+#define PWM_PERIOD              (UNSIGNED16_T)((configCPU_CLOCK_HZ/((UNSIGNED32_T)configPWM_FREQ_HZ * configPWM_TMR_PRESCALER *2))-1)
+
+/*!
+ * \def DEAD_TIME
+ */
+#define DEAD_TIME               (4)
+
+/*!
+ * \def PWM_MAX_DUTY_VAL
+ */
+#define PWM_MAX_DUTY_VAL        (UNSIGNED16_T)((configCPU_CLOCK_HZ/((UNSIGNED32_T)configPWM_FREQ_HZ * configPWM_TMR_PRESCALER))-2*DEAD_TIME) // TODO: Investigate the MAX PWM.
+
+#define PWM_MAX_DUTY_VAL_Q16    ((SIGNED32_T)(PWM_MAX_DUTY_VAL) << 16)
+
 //=================================================================================================
 // Private definitions.
 //=================================================================================================
 static BOOLEAN_T bInit = FALSE;
+static UNSIGNED16_T u16_dutyCycle = 0;
 
 //=================================================================================================
 // Private member declarations.
 //=================================================================================================
+volatile UNSIGNED16_T currentSector = 0;
+volatile BOOLEAN_T b_positive_duty_cycle = TRUE;
 
 //=================================================================================================
 // Public / Internal member external declarations.
@@ -76,9 +101,9 @@ void DrvPwm_Init(void)
          */
         // Dead Time Unit
         P1DTCON1bits.DTBPS = 0;
-        P1DTCON1bits.DTB   = DEAD_TIME; // 25ns * DTB = 1us deadtime
+        P1DTCON1bits.DTB   = DEAD_TIME; // 25ns * DTB = 0.1us deadtime
         P1DTCON1bits.DTAPS = 0;
-        P1DTCON1bits.DTA   = DEAD_TIME; // 25ns * DTA = 1us deadtime
+        P1DTCON1bits.DTA   = DEAD_TIME; // 25ns * DTA = 0.1us deadtime
         // Dead time before High side output is driven high is based on Dead Time UnitA
         P1DTCON2bits.DTS1A = CLEAR;
         P1DTCON2bits.DTS2A = CLEAR;
@@ -121,9 +146,9 @@ void DrvPwm_Init(void)
         P1OVDCONbits.POVD3L = 1;
         P1OVDCONbits.POVD3H = 1;
         // Override states (High side = INACTIVE; Low side = ACTIVE)
-        P1OVDCONbits.POUT1L = ACTIVE;
-        P1OVDCONbits.POUT2L = ACTIVE;
-        P1OVDCONbits.POUT3L = ACTIVE;
+        P1OVDCONbits.POUT1L = INACTIVE;
+        P1OVDCONbits.POUT2L = INACTIVE;
+        P1OVDCONbits.POUT3L = INACTIVE;
         P1OVDCONbits.POUT1H = INACTIVE;
         P1OVDCONbits.POUT2H = INACTIVE;
         P1OVDCONbits.POUT3H = INACTIVE;
@@ -131,8 +156,10 @@ void DrvPwm_Init(void)
         /*
          * ADC Event Trigger
          */
-        P1SECMPbits.SEVTDIR = 1;            // Special Event Trigger will occur when the PWM time base is counting down
-        P1SECMPbits.SEVTCMP = PWM_PERIOD;   // Special Event Compare Value
+        P1SECMPbits.SEVTDIR = CLEAR;    // Special Event Trigger will occur when the PWM time base is counting up
+        P1SECMPbits.SEVTCMP = 10;       // Special Event Compare Value
+                                        // offset of 10 counts (0.25us)
+                                        // Minimum duty cycle is 0.25us * 2 / 50us = 1%
 
         /*
          * PWM Duty Cycle
@@ -148,5 +175,141 @@ void DrvPwm_Init(void)
 
         // Enable
         P1TCONbits.PTEN = SET;
+    }
+}
+
+void DrvPwm_UpdateDutyCycle(_Q16 q16_duty_cycle)
+{
+    UNSIGNED16_T u16_temp_val = 0;
+    if(q16_duty_cycle >= 0) {
+        b_positive_duty_cycle = TRUE;
+    } else {
+        b_positive_duty_cycle = FALSE;
+        q16_duty_cycle = _Q16neg(q16_duty_cycle);
+    }
+    u16_temp_val = (UNSIGNED16_T)(_Q16mpy(q16_duty_cycle, PWM_MAX_DUTY_VAL_Q16) >> 16);
+    if(u16_temp_val > PWM_MAX_DUTY_VAL) {
+        u16_temp_val = PWM_MAX_DUTY_VAL;
+    }
+    u16_dutyCycle = u16_temp_val;
+}
+
+void DrvPwm_UpdateCommutation(UNSIGNED16_T sectorNumber)
+{
+    currentSector = sectorNumber;
+    switch(sectorNumber) {
+        case 0: {
+            /* Winding A */
+            P1DC1 = u16_dutyCycle;
+            P1OVDCONbits.POVD1L = 1;
+            P1OVDCONbits.POVD1H = 1;
+            /* Winding B */
+            P1DC2 = 0;
+            P1OVDCONbits.POVD2L = 1;
+            P1OVDCONbits.POVD2H = 1;
+            /* Winding C (Hi-Z) */
+            P1DC3 = 0;
+            P1OVDCONbits.POVD3L = 0;
+            P1OVDCONbits.POVD3H = 0;
+            break;
+        }
+        case 1: {
+            /* Winding A */
+            P1DC1 = u16_dutyCycle;
+            P1OVDCONbits.POVD1L = 1;
+            P1OVDCONbits.POVD1H = 1;
+            /* Winding B */
+            P1DC2 = 0;
+            P1OVDCONbits.POVD2L = 0;
+            P1OVDCONbits.POVD2H = 0;
+            /* Winding C */
+            P1DC3 = 0;
+            P1OVDCONbits.POVD3L = 1;
+            P1OVDCONbits.POVD3H = 1;
+            break;
+        }
+        case 2: {
+            /* Winding A */
+            P1DC1 = 0;
+            P1OVDCONbits.POVD1L = 0;
+            P1OVDCONbits.POVD1H = 0;
+            /* Winding B */
+            P1DC2 = u16_dutyCycle;
+            P1OVDCONbits.POVD2L = 1;
+            P1OVDCONbits.POVD2H = 1;
+            /* Winding C */
+            P1DC3 = 0;
+            P1OVDCONbits.POVD3L = 1;
+            P1OVDCONbits.POVD3H = 1;
+            break;
+        }
+        case 3: {
+            /* Winding A */
+            P1DC1 = 0;
+            P1OVDCONbits.POVD1L = 1;
+            P1OVDCONbits.POVD1H = 1;
+            /* Winding B */
+            P1DC2 = u16_dutyCycle;
+            P1OVDCONbits.POVD2L = 1;
+            P1OVDCONbits.POVD2H = 1;
+            /* Winding C */
+            P1DC3 = 0;
+            P1OVDCONbits.POVD3L = 0;
+            P1OVDCONbits.POVD3H = 0;
+            break;
+        }
+        case 4: {
+            /* Winding A */
+            P1DC1 = 0;
+            P1OVDCONbits.POVD1L = 1;
+            P1OVDCONbits.POVD1H = 1;
+            /* Winding B */
+            P1DC2 = 0;
+            P1OVDCONbits.POVD2L = 0;
+            P1OVDCONbits.POVD2H = 0;
+            /* Winding C */
+            P1DC3 = u16_dutyCycle;
+            P1OVDCONbits.POVD3L = 1;
+            P1OVDCONbits.POVD3H = 1;
+            break;
+        }
+        case 5: {
+            /* Winding A*/
+            P1DC1 = 0;
+            P1OVDCONbits.POVD1L = 0;
+            P1OVDCONbits.POVD1H = 0;
+            /* Winding B */
+            P1DC2 = 0;
+            P1OVDCONbits.POVD2L = 1;
+            P1OVDCONbits.POVD2H = 1;
+            /* Winding C */
+            P1DC3 = u16_dutyCycle;
+            P1OVDCONbits.POVD3L = 1;
+            P1OVDCONbits.POVD3H = 1;
+            break;
+        }
+        default: {
+            /*
+             * Invalid sector
+             * Override all pins to inactive
+             */
+            P1DC1 = 0;
+            P1DC2  = 0;
+            P1DC3 = 0;
+            P1OVDCONbits.POVD1L = 0;
+            P1OVDCONbits.POVD1H = 0;
+            P1OVDCONbits.POVD2L = 0;
+            P1OVDCONbits.POVD2H = 0;
+            P1OVDCONbits.POVD3L = 0;
+            P1OVDCONbits.POVD3H = 0;
+
+            P1OVDCONbits.POUT1L = INACTIVE;
+            P1OVDCONbits.POUT2L = INACTIVE;
+            P1OVDCONbits.POUT3L = INACTIVE;
+            P1OVDCONbits.POUT1H = INACTIVE;
+            P1OVDCONbits.POUT2H = INACTIVE;
+            P1OVDCONbits.POUT3H = INACTIVE;
+            break;
+        }
     }
 }

@@ -2,6 +2,7 @@
 #define GLOBAL_DEF_H
 
 #include <p33FJ128MC706A.h>
+#include <libq.h>
 
 /*!
  * \typedef boolean

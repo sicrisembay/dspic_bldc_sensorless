@@ -96,26 +96,38 @@ static void PrvConfigurePin(void)
 
 static void PrvTest(void *pvParam)
 {
-    UNSIGNED16_T i = 0;
+    SIGNED16_T sector = 0;
     TickType_t xLastExecutionTime;
     xLastExecutionTime = xTaskGetTickCount();
+    BOOLEAN_T prevBtn1 = FALSE;
+    BOOLEAN_T prevBtn2 = FALSE;
 
     vTaskSetApplicationTaskTag(NULL, (void *)CTX_TASK_TEST);
     
     while(1)
     {
-        vTaskDelayUntil( &xLastExecutionTime, 10);
+        vTaskDelayUntil( &xLastExecutionTime, 1);
         USER_LED_1 = BTN1;
         USER_LED_2 = BTN2;
-        i++;
-        if(i >= 100) {
-            i = 0;
-            if(USER_LED_4) {
-                USER_LED_4 = CLEAR;
-            } else {
-                USER_LED_4 = SET;
+        if((BTN1 != prevBtn1) && BTN1) {
+            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.1));
+            DrvPwm_UpdateCommutation(sector);
+            sector++;
+            if(sector > 5) {
+                sector = 0;
             }
+        } else if ((BTN2 != prevBtn2) && (BTN2)) {
+            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.05));
+            sector--;
+            if(sector < 0) {
+                sector = 5;
+            }
+            DrvPwm_UpdateCommutation(sector);
+        } else {
+            DrvPwm_UpdateDutyCycle(0);
         }
+        prevBtn1 = BTN1;
+        prevBtn2 = BTN2;
     }
 }
 
