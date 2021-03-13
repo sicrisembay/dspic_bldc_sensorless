@@ -160,12 +160,9 @@ void DrvAdc_Init(void)
     AD1CON2bits.ALTS    = CLEAR;    // Always uses channel input selects for Sample A
 
     AD1CON3bits.ADRC    = CLEAR;    // Clock Derived from System Clk
-    AD1CON3bits.ADCS    = 25;       // Tad = (ADCS + 1) * 1/40M = 0.65us  (Note: min is 76ns as stated in datasheet)
-                                    // Tconv = 12*Tad = 7.8us (Conversion Time for one channel)
-                                    // Tconv_4CH = 4*Tconv = 31.2us (Total conversion time for 4CH)
-                                    // For this application, Tsim is 50us (1 sample per PWM period)
-                                    // Tsim = Tsamp + Tconv *4
-                                    // Automatic Sampling (ASAM).. Tsamp = 18.8us (Note: min. is 2Tad)
+    AD1CON3bits.ADCS    = 5;        // Tad = (ADCS + 1) * 1/40M = 0.15us  (Note: min is 76ns as stated in datasheet)
+                                    // Tconv = 12*Tad = 1.8us (Conversion Time for one channel)
+                                    // Tconv_4CH = 4*Tconv = 7.2us (Total conversion time for 4CH)
 
     AD1CON4bits.DMABL   = 1;        // Allocates 2 words of buffer to each analog input
     
@@ -174,9 +171,10 @@ void DrvAdc_Init(void)
                                     // CH2 positive input is AN1 (IMON2)
                                     // CH3 positive input is AN2 (IMON3)
     AD1CHS0bits.CH0NA   = CLEAR;    // CH0 negative input is VREFL
-    AD1CHS0bits.CH0SA   = 3;        // CH0 positive input is AN3 (IMON4)
-    
-    
+    AD1CHS0bits.CH0SA   = 12;       // CH0 positive input is BEMF (Default to Sector0)
+                                    // Sector0, phaseC (Vmon3) is non-driven --> AN12
+
+
     // ADC2 ===================================================================
     // - used to measure VMON1 (AN10), VMON2 (AN11), VMON3 (AN12), VMON4 (AN13)
     // - Sequential sampling using MUXA (CH0)
@@ -197,7 +195,9 @@ void DrvAdc_Init(void)
     AD2CON2bits.ALTS    = CLEAR;    // Always uses channel input selects for Sample A
  
     AD2CON3bits.ADRC    = CLEAR;    // Clock Derived from System Clock
-    AD2CON3bits.ADCS    = 63;       // (ADCS + 1) * 1/40M = 1.6us
+    AD2CON3bits.ADCS    = 3;        // (ADCS + 1) * 1/40M = 0.1us  (Note: min is 76ns as stated in datasheet)
+                                    // Tconv = 12*Tad = 1.8us (Conversion Time for one channel)
+                                    // Note: ADC2 uses sequential sampling
 
     AD2CON4bits.DMABL   = 1;        // Allocates 2 words of buffer to each 1 analog input
 
@@ -212,11 +212,19 @@ void DrvAdc_Init(void)
     // Enable ADC =============================================================
     // ADC1
     IFS0bits.AD1IF      = CLEAR;    // Clear the A/D interrupt flag bit
+#if (defined(ENABLE_ADC_ISR_TRACE) && (ENABLE_ADC_ISR_TRACE == 1))
+    IEC0bits.AD1IE      = SET;     // Enable A/D interrupt for trace timing debug
+#else
     IEC0bits.AD1IE      = CLEAR;    // Do Not Enable A/D interrupt 
+#endif
     AD1CON1bits.ADON    = SET;      // Turn on the A/D converter
     // ADC2
     IFS1bits.AD2IF      = CLEAR;    // Clear the A/D interrupt flag bit
+#if (defined(ENABLE_ADC_ISR_TRACE) && (ENABLE_ADC_ISR_TRACE == 1))
+    IEC1bits.AD2IE      = SET;     // Enable A/D interrupt for trace timing debug
+#else
     IEC1bits.AD2IE      = CLEAR;    // Do Not Enable A/D interrupt 
+#endif
     AD2CON1bits.ADON    = SET;      // Turn on the A/D converter
     
     // Configure DMA channels used for ADC
@@ -327,6 +335,7 @@ static void PrvAdc_InitDma(void)
 //! \param  None
 //! \return \c void
 //*****************************************************************************
+extern volatile UNSIGNED16_T currentSector;
 void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -339,11 +348,35 @@ void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
         Imon_V[IMON1] = (Imon_BufferA[0][IMON1] + Imon_BufferA[1][IMON1]) >> 1;
         Imon_V[IMON2] = (Imon_BufferA[0][IMON2] + Imon_BufferA[1][IMON2]) >> 1;
         Imon_V[IMON3] = (Imon_BufferA[0][IMON3] + Imon_BufferA[1][IMON3]) >> 1;
+        /// TODO: refactor for better name
+        Imon_V[BEMF] = (Imon_BufferA[0][BEMF] + Imon_BufferA[1][BEMF]) >> 1;
     } else {
         // Process BufferB
         Imon_V[IMON1] = (Imon_BufferB[0][IMON1] + Imon_BufferB[1][IMON1]) >> 1;
         Imon_V[IMON2] = (Imon_BufferB[0][IMON2] + Imon_BufferB[1][IMON2]) >> 1;
         Imon_V[IMON3] = (Imon_BufferB[0][IMON3] + Imon_BufferB[1][IMON3]) >> 1;
+        /// TODO: refactor for better name
+        Imon_V[BEMF] = (Imon_BufferB[0][BEMF] + Imon_BufferB[1][BEMF]) >> 1;
+    }
+    switch(currentSector) {
+        case 0:
+        case 3: {
+            AD1CHS0bits.CH0SA = 12;  // AN12 (Non-fed is phaseC)
+            break;
+        }
+        case 1:
+        case 4: {
+            AD1CHS0bits.CH0SA = 11; // AN11 (Non-fed is phaseB)
+            break;
+        }
+        case 2:
+        case 5: {
+            AD1CHS0bits.CH0SA = 10; // AN10 (Non-fed is phaseA)
+            break;
+        }
+        default: {
+            break;
+        }
     }
     ImonDmaBuffer ^= 1;
 
@@ -355,6 +388,22 @@ void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
     }
     HOOK_TRACE_OUT(TRUE);
 }
+
+#if (defined(ENABLE_ADC_ISR_TRACE) && (ENABLE_ADC_ISR_TRACE == 1))
+void __attribute__((__interrupt__, auto_psv)) _ADC1Interrupt(void)
+{
+    HOOK_TRACE_IN(CTX_ADC1_ISR, TRUE);
+    IFS0bits.AD1IF = CLEAR;
+    HOOK_TRACE_OUT(TRUE);
+}
+
+void __attribute__((__interrupt__, auto_psv)) _ADC2Interrupt(void)
+{
+    HOOK_TRACE_IN(CTX_ADC2_ISR, TRUE);
+    IFS1bits.AD2IF = CLEAR;
+    HOOK_TRACE_OUT(TRUE);
+}
+#endif
 
 //*****************************************************************************
 //! \brief  This function is the Interrupt Service Routine of DMA Channel1.

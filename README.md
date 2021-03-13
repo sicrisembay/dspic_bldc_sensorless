@@ -1,5 +1,5 @@
 ## Getting started
-This repository contains my hobby project on PMSM FOC on a dsPIC33 microcontroller.  Development board used in this hobby project is Cerebot MC7 (obsoleted) from Digilent.
+This repository contains my hobby project on BLDC sensor-less on a dsPIC33 microcontroller.  Development board used in this hobby project is Cerebot MC7 (obsoleted) from Digilent.
 
 ### Development Environment
 This is my development setup in my house.

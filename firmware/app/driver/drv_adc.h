@@ -19,7 +19,8 @@
 
 typedef enum
 {
-    IMON4,  // Note: Imon4 is first enum as it is connected to ADC1 CH0 and buffer is filled as sequence of conversion (CH0->CH1->CH2->CH3)
+    BEMF,   // Note: ADC1 CH0 can connect to VMON1(AN10), VMON2(AN11), VMON3 (AN12)
+            // ADC CH0 is connected to non-driven phase (determined by commutation sector)
     IMON1,
     IMON2,
     IMON3,

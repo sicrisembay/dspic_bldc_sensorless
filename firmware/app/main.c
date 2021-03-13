@@ -96,11 +96,11 @@ static void PrvConfigurePin(void)
 
 static void PrvTest(void *pvParam)
 {
-    UNSIGNED16_T i = 0;
-    UNSIGNED16_T j = 0;
-    UNSIGNED16_T sector = 0;
+    SIGNED16_T sector = 0;
     TickType_t xLastExecutionTime;
     xLastExecutionTime = xTaskGetTickCount();
+    BOOLEAN_T prevBtn1 = FALSE;
+    BOOLEAN_T prevBtn2 = FALSE;
 
     vTaskSetApplicationTaskTag(NULL, (void *)CTX_TASK_TEST);
     
@@ -109,31 +109,25 @@ static void PrvTest(void *pvParam)
         vTaskDelayUntil( &xLastExecutionTime, 1);
         USER_LED_1 = BTN1;
         USER_LED_2 = BTN2;
-        if(BTN1) {
-            DrvPwm_UpdateDutyCycle((20 * PWM_PERIOD)/100);
-        } else if(BTN2) {
-            DrvPwm_UpdateDutyCycle((10 * PWM_PERIOD)/100);
-        } else {
-            DrvPwm_UpdateDutyCycle(0);
-        }
-        i++;
-        if(i >= 1000) {
-            i = 0;
-            if(USER_LED_4) {
-                USER_LED_4 = CLEAR;
-            } else {
-                USER_LED_4 = SET;
-            }
-        }
-        j++;
-        if(j >= 28) {
-            j = 0;
+        if((BTN1 != prevBtn1) && BTN1) {
+            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.1));
+            DrvPwm_UpdateCommutation(sector);
             sector++;
             if(sector > 5) {
                 sector = 0;
             }
+        } else if ((BTN2 != prevBtn2) && (BTN2)) {
+            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.05));
+            sector--;
+            if(sector < 0) {
+                sector = 5;
+            }
             DrvPwm_UpdateCommutation(sector);
+        } else {
+            DrvPwm_UpdateDutyCycle(0);
         }
+        prevBtn1 = BTN1;
+        prevBtn2 = BTN2;
     }
 }
 

@@ -34,6 +34,11 @@
 #define CPU_USAGE_UPDATE_PERIOD     (10)
 
 /*!
+ * \def ENABLE_ADC_ISR_TRACE
+ */
+#define ENABLE_ADC_ISR_TRACE        (0)
+
+/*!
  * \enum CTX_ID_T
  * 
  * Context ID enumeration.  This is used in execution trace feature.
@@ -41,6 +46,10 @@
 typedef enum
 {
     CTX_INVALID = 0,
+#if (defined(ENABLE_ADC_ISR_TRACE) && (ENABLE_ADC_ISR_TRACE == 1))
+    CTX_ADC1_ISR,   /* Test Purpose */
+    CTX_ADC2_ISR,   /* Test Purpose */
+#endif
     CTX_DMA0_ISR,
     CTX_DMA1_ISR,
     CTX_QEI_ISR,
