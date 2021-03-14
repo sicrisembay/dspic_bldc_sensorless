@@ -26,7 +26,7 @@
  * \def configUART_BAUDRARE          
  */
 #ifndef configUART_BAUDRARE
-#define configUART_BAUDRARE             (115200)
+#define configUART_BAUDRARE             (238095)
 #endif
 
 

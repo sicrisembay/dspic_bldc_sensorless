@@ -32,7 +32,7 @@
  * Time interval between stream packet.
  */
 #ifndef configTASK_PCINF_SEND_INTERVAL_MS
-#define configTASK_PCINF_SEND_INTERVAL_MS       (5)
+#define configTASK_PCINF_SEND_INTERVAL_MS       (1)
 #endif
 
 

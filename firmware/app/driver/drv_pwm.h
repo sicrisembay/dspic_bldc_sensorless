@@ -18,6 +18,7 @@
  */
 void DrvPwm_Init(void);
 void DrvPwm_UpdateDutyCycle(_Q16 q16_duty_cycle);
-void DrvPwm_UpdateCommutation(UNSIGNED16_T sectorNumber);
+void DrvPwm_UpdateCmtSector(UNSIGNED16_T sectorNumber);
+void DrvPwm_UpdateCommutation(void);
 
 #endif // End DRV_TIMER_H

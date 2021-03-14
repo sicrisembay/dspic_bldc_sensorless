@@ -17,6 +17,8 @@
 #define configDMA1_INTERRUPT_PRIORITY    (configKERNEL_INTERRUPT_PRIORITY)
 #endif
 
+typedef void (*adc_callback)(void);
+
 typedef enum
 {
     ADC_BEMF = 0,   // Note: ADC1 CH0 can connect to VMON1(AN10), VMON2(AN11), VMON3 (AN12)
@@ -34,6 +36,10 @@ typedef enum
     ADC_VMON3,
     N_ADC_TWO_CHANNEL
 } ADC_TWO_CHANNEL_T;
+
+#define ADC_VMON1_MASK      (1 << ADC_VMON1)
+#define ADC_VMON2_MASK      (1 << ADC_VMON2)
+#define ADC_VMON3_MASK      (1 << ADC_VMON3)
 
 
 /*!
@@ -59,8 +65,9 @@ typedef enum
  */
 void DrvAdc_Init(void);
 
-void DrvAdc_SetCurrentControlHandlerOne(TaskHandle_t tskHandle);
+void DrvAdc_RegisterAdcOneCallback(adc_callback fcb);
 UNSIGNED16_T DrvAdc_GetAdcOneValue(ADC_ONE_CHANNEL_T chIdx);
 UNSIGNED16_T DrvAdc_GetAdcTwoValue(ADC_TWO_CHANNEL_T chIdx);
+UNSIGNED16_T DrvAdc_GetAdcPhaseVoltageNeutral(void);
 
 #endif // End DRV_ADC_H

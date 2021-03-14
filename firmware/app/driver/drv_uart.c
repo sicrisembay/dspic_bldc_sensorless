@@ -14,7 +14,7 @@
 //=================================================================================================
 // Private definitions.
 //=================================================================================================
-#define BRGVAL          (((configCPU_CLOCK_HZ/configUART_BAUDRARE)/16) - 1)
+#define BRGVAL          (configCPU_CLOCK_HZ/(configUART_BAUDRARE*4) - 1)
 
 //=================================================================================================
 // Private member declarations.
@@ -58,7 +58,7 @@ RET_DRV_UART_T DrvUart_Init(void)
         PIN_DIR_IN(DIR_U1RX);
       
         /* Setup the UART. */
-        U1MODEbits.BRGH         = 0;
+        U1MODEbits.BRGH         = 1;
         U1MODEbits.STSEL        = 0;
         U1MODEbits.PDSEL        = 0;
         U1MODEbits.ABAUD        = 0;

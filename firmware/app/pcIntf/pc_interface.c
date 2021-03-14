@@ -311,6 +311,9 @@ static void PrvPcInf_TskSendData(void *pvParam)
                 u16TempVal = DrvAdc_GetAdcTwoValue(ADC_VMON3);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
                 pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
+                u16TempVal = DrvAdc_GetAdcPhaseVoltageNeutral() / 3;
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)(u16TempVal & 0x00FF);
+                pu8_PcInf_XmitDataBuffer[nDataCount++] = (UNSIGNED8_T)((u16TempVal >> 8) & 0x00FF);
             }
 
             pu8_PcInf_XmitDataBuffer[0] = TAG_DATA;

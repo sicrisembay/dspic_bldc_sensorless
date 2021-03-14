@@ -36,10 +36,12 @@
 static BOOLEAN_T bInit = FALSE;
 static UNSIGNED16_T u16_dutyCycle = 0;
 
+/* External variable from bldc.c */
+extern volatile UNSIGNED16_T curSector;
+
 //=================================================================================================
 // Private member declarations.
 //=================================================================================================
-volatile UNSIGNED16_T curSector = 0;
 volatile BOOLEAN_T b_positive_duty_cycle = TRUE;
 
 //=================================================================================================
@@ -194,98 +196,124 @@ void DrvPwm_UpdateDutyCycle(_Q16 q16_duty_cycle)
     u16_dutyCycle = u16_temp_val;
 }
 
-void DrvPwm_UpdateCommutation(UNSIGNED16_T sectorNumber)
+void DrvPwm_UpdateCmtSector(UNSIGNED16_T sectorNumber)
 {
     curSector = sectorNumber;
-    switch(sectorNumber) {
+}
+
+void DrvPwm_UpdateCommutation(void)
+{
+    P1DC1 = u16_dutyCycle;
+    P1DC2 = u16_dutyCycle;
+    P1DC3 = u16_dutyCycle;
+
+    switch(curSector) {
         case 0: {
             /* Winding A */
-            P1DC1 = u16_dutyCycle;
-            P1OVDCONbits.POVD1L = 1;
-            P1OVDCONbits.POVD1H = 1;
+            P1OVDCONbits.POUT1H = ON;
+            P1OVDCONbits.POUT1L = OFF;
+            P1OVDCONbits.POVD1H = 1;    /* PWM */
+            P1OVDCONbits.POVD1L = 0;
             /* Winding B */
-            P1DC2 = 0;
-            P1OVDCONbits.POVD2L = 1;
-            P1OVDCONbits.POVD2H = 1;
+            P1OVDCONbits.POUT2H = OFF;
+            P1OVDCONbits.POUT2L = ON;
+            P1OVDCONbits.POVD2L = 0;
+            P1OVDCONbits.POVD2H = 0;
             /* Winding C (Hi-Z) */
-            P1DC3 = 0;
+            P1OVDCONbits.POUT3H = OFF;
+            P1OVDCONbits.POUT3L = OFF;
             P1OVDCONbits.POVD3L = 0;
             P1OVDCONbits.POVD3H = 0;
             break;
         }
         case 1: {
             /* Winding A */
-            P1DC1 = u16_dutyCycle;
-            P1OVDCONbits.POVD1L = 1;
-            P1OVDCONbits.POVD1H = 1;
+            P1OVDCONbits.POUT1H = ON;
+            P1OVDCONbits.POUT1L = OFF;
+            P1OVDCONbits.POVD1H = 1;    /* PWM */
+            P1OVDCONbits.POVD1L = 0;
             /* Winding B */
-            P1DC2 = 0;
-            P1OVDCONbits.POVD2L = 0;
+            P1OVDCONbits.POUT2H = OFF;
+            P1OVDCONbits.POUT2L = OFF;
             P1OVDCONbits.POVD2H = 0;
+            P1OVDCONbits.POVD2L = 0;
             /* Winding C */
-            P1DC3 = 0;
-            P1OVDCONbits.POVD3L = 1;
-            P1OVDCONbits.POVD3H = 1;
+            P1OVDCONbits.POUT3H = OFF;
+            P1OVDCONbits.POUT3L = ON;
+            P1OVDCONbits.POVD3H = 0;
+            P1OVDCONbits.POVD3L = 0;
             break;
         }
         case 2: {
             /* Winding A */
-            P1DC1 = 0;
-            P1OVDCONbits.POVD1L = 0;
+            P1OVDCONbits.POUT1H = OFF;
+            P1OVDCONbits.POUT1L = OFF;
             P1OVDCONbits.POVD1H = 0;
+            P1OVDCONbits.POVD1L = 0;
             /* Winding B */
-            P1DC2 = u16_dutyCycle;
-            P1OVDCONbits.POVD2L = 1;
-            P1OVDCONbits.POVD2H = 1;
+            P1OVDCONbits.POUT2H = ON;
+            P1OVDCONbits.POUT2L = OFF;
+            P1OVDCONbits.POVD2H = 1;    /* PWM */
+            P1OVDCONbits.POVD2L = 0;
             /* Winding C */
-            P1DC3 = 0;
-            P1OVDCONbits.POVD3L = 1;
-            P1OVDCONbits.POVD3H = 1;
+            P1OVDCONbits.POUT3H = OFF;
+            P1OVDCONbits.POUT3L = ON;
+            P1OVDCONbits.POVD3H = 0;
+            P1OVDCONbits.POVD3L = 0;
             break;
         }
         case 3: {
             /* Winding A */
-            P1DC1 = 0;
-            P1OVDCONbits.POVD1L = 1;
-            P1OVDCONbits.POVD1H = 1;
+            P1OVDCONbits.POUT1H = OFF;
+            P1OVDCONbits.POUT1L = ON;
+            P1OVDCONbits.POVD1H = 0;
+            P1OVDCONbits.POVD1L = 0;
             /* Winding B */
-            P1DC2 = u16_dutyCycle;
-            P1OVDCONbits.POVD2L = 1;
-            P1OVDCONbits.POVD2H = 1;
+            P1OVDCONbits.POUT2H = ON;
+            P1OVDCONbits.POUT2L = OFF;
+            P1OVDCONbits.POVD2H = 1;    /* PWM */
+            P1OVDCONbits.POVD2L = 0;
             /* Winding C */
-            P1DC3 = 0;
-            P1OVDCONbits.POVD3L = 0;
+            P1OVDCONbits.POUT3H = OFF;
+            P1OVDCONbits.POUT3L = OFF;
             P1OVDCONbits.POVD3H = 0;
+            P1OVDCONbits.POVD3L = 0;
             break;
         }
         case 4: {
             /* Winding A */
-            P1DC1 = 0;
-            P1OVDCONbits.POVD1L = 1;
-            P1OVDCONbits.POVD1H = 1;
+            P1OVDCONbits.POUT1H = OFF;
+            P1OVDCONbits.POUT1L = ON;
+            P1OVDCONbits.POVD1H = 0;
+            P1OVDCONbits.POVD1L = 0;
             /* Winding B */
-            P1DC2 = 0;
-            P1OVDCONbits.POVD2L = 0;
+            P1OVDCONbits.POUT2H = OFF;
+            P1OVDCONbits.POUT2L = OFF;
             P1OVDCONbits.POVD2H = 0;
+            P1OVDCONbits.POVD2L = 0;
             /* Winding C */
-            P1DC3 = u16_dutyCycle;
-            P1OVDCONbits.POVD3L = 1;
-            P1OVDCONbits.POVD3H = 1;
+            P1OVDCONbits.POUT3H = ON;
+            P1OVDCONbits.POUT3L = OFF;
+            P1OVDCONbits.POVD3H = 1;    /* PWM */
+            P1OVDCONbits.POVD3L = 0;
             break;
         }
         case 5: {
             /* Winding A*/
-            P1DC1 = 0;
-            P1OVDCONbits.POVD1L = 0;
+            P1OVDCONbits.POUT1H = OFF;
+            P1OVDCONbits.POUT1L = OFF;
             P1OVDCONbits.POVD1H = 0;
+            P1OVDCONbits.POVD1L = 0;
             /* Winding B */
-            P1DC2 = 0;
-            P1OVDCONbits.POVD2L = 1;
-            P1OVDCONbits.POVD2H = 1;
+            P1OVDCONbits.POUT2H = OFF;
+            P1OVDCONbits.POUT2L = ON;
+            P1OVDCONbits.POVD2H = 0;
+            P1OVDCONbits.POVD2L = 0;
             /* Winding C */
-            P1DC3 = u16_dutyCycle;
-            P1OVDCONbits.POVD3L = 1;
-            P1OVDCONbits.POVD3H = 1;
+            P1OVDCONbits.POUT3H = ON;
+            P1OVDCONbits.POUT3L = OFF;
+            P1OVDCONbits.POVD3H = 1;    /* PWM */
+            P1OVDCONbits.POVD3L = 0;
             break;
         }
         default: {

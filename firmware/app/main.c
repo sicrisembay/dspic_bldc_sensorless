@@ -94,11 +94,16 @@ static void PrvConfigurePin(void)
 }
 
 
+extern volatile UNSIGNED16_T curSector;
+
 static void PrvTest(void *pvParam)
 {
     SIGNED16_T sector = 0;
     TickType_t xLastExecutionTime;
     xLastExecutionTime = xTaskGetTickCount();
+
+    int i = 0;
+    int cmtInterval = 100;
     BOOLEAN_T prevBtn1 = FALSE;
     BOOLEAN_T prevBtn2 = FALSE;
 
@@ -109,25 +114,48 @@ static void PrvTest(void *pvParam)
         vTaskDelayUntil( &xLastExecutionTime, 1);
         USER_LED_1 = BTN1;
         USER_LED_2 = BTN2;
+#if 0
         if((BTN1 != prevBtn1) && BTN1) {
-            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.1));
-            DrvPwm_UpdateCommutation(sector);
+            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.15));
+            DrvPwm_UpdateCmtSector(sector);
             sector++;
             if(sector > 5) {
                 sector = 0;
             }
         } else if ((BTN2 != prevBtn2) && (BTN2)) {
-            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.05));
+            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.1));
             sector--;
             if(sector < 0) {
                 sector = 5;
             }
-            DrvPwm_UpdateCommutation(sector);
+            DrvPwm_UpdateCmtSector(sector);
         } else {
             DrvPwm_UpdateDutyCycle(0);
         }
         prevBtn1 = BTN1;
         prevBtn2 = BTN2;
+#elif 1
+        if(BTN1) {
+            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.8));
+            i++;
+            if(i > cmtInterval) {
+                DrvPwm_UpdateCmtSector(sector);
+                sector++;
+                if(sector > 5) {
+                    sector = 0;
+                }
+                i = 0;
+                cmtInterval--;
+                if(cmtInterval < 5) {
+                    cmtInterval = 5;
+                }
+            }
+        } else {
+            DrvPwm_UpdateDutyCycle(0);
+            i = 0;
+            cmtInterval = 100;
+        }
+#endif
     }
 }
 

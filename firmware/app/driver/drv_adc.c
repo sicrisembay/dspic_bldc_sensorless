@@ -8,6 +8,7 @@
 #include "PinConfig.h"
 #include "drv_adc.h"
 #include "util_trace.h"
+#include "drv_pwm.h"
 
 /*!
  * \def NUM_ANALOG_BUFFER_WORDS
@@ -26,7 +27,6 @@
 //*****************************************************************************
 // Private member declarations.
 //*****************************************************************************
-static TaskHandle_t xTaskDma0Notify = NULL;
 
 /*!
  * \var UNSIGNED16_T adc_one_bufferA
@@ -94,6 +94,14 @@ volatile UNSIGNED16_T adc_one_val[N_ADC_ONE_CHANNEL];
  */
 volatile UNSIGNED16_T adc_two_val[N_ADC_TWO_CHANNEL];
 
+/*!
+ * \var UNSIGNED16_t adc_motor_neutral
+ * Neutral phase voltage in adc count.  This is also known as Vn
+ */
+volatile UNSIGNED16_T adc_motor_neutral;
+
+adc_callback adc_one_fcb = NULL;
+static BOOLEAN_T bInit = FALSE;
 
 //*****************************************************************************
 // Public / Internal member external declarations.
@@ -110,6 +118,9 @@ static void PrvAdc_InitDma(void);
 
 void DrvAdc_Init(void)
 {
+    if(bInit == TRUE) {
+        return;
+    }
     // Configure Analog Pin
     AD1PCFGLbits.PCFG0 = 0;
     AD2PCFGLbits.PCFG0 = 0;
@@ -226,20 +237,8 @@ void DrvAdc_Init(void)
     
     // Configure DMA channels used for ADC
     PrvAdc_InitDma();
-}
-
-
-//*****************************************************************************
-//! \brief  This function set the task handle for direct task notification to
-//! from ISR.
-//!
-//! \param  tskHandle Handle of the task to be notified from ISR.
-//!
-//! \return \c void
-//*****************************************************************************
-void DrvAdc_SetCurrentControlHandlerOne(TaskHandle_t tskHandle)
-{
-    xTaskDma0Notify = tskHandle;
+    
+    bInit = TRUE;
 }
 
 
@@ -276,6 +275,16 @@ UNSIGNED16_T DrvAdc_GetAdcTwoValue(ADC_TWO_CHANNEL_T chIdx)
         retval = adc_two_val[chIdx];
     }
     return(retval);
+}
+
+UNSIGNED16_T DrvAdc_GetAdcPhaseVoltageNeutral(void)
+{
+    return(adc_motor_neutral);
+}
+
+void DrvAdc_RegisterAdcOneCallback(adc_callback fcb)
+{
+    adc_one_fcb = fcb;
 }
 
 //*****************************************************************************
@@ -335,25 +344,26 @@ static void PrvAdc_InitDma(void)
 extern volatile UNSIGNED16_T curSector;
 volatile UNSIGNED16_T prevSector = 0xFFFF; /* initialized to something invalid */
 
+
 void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
 {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
     HOOK_TRACE_IN(CTX_DMA0_ISR, TRUE);
     IFS0bits.DMA0IF = CLEAR;
+
+    DrvPwm_UpdateCommutation();
 
     if(AdcOneDmaBuffer == 0) {
         // Process BufferA
         adc_one_val[ADC_IMON1] = (adc_one_bufferA[0][ADC_IMON1] + adc_one_bufferA[1][ADC_IMON1]) >> 1;
         adc_one_val[ADC_IMON2] = (adc_one_bufferA[0][ADC_IMON2] + adc_one_bufferA[1][ADC_IMON2]) >> 1;
         adc_one_val[ADC_IMON3] = (adc_one_bufferA[0][ADC_IMON3] + adc_one_bufferA[1][ADC_IMON3]) >> 1;
-        adc_one_val[ADC_BEMF] = (adc_one_bufferA[0][ADC_BEMF] + adc_one_bufferA[1][ADC_BEMF]) >> 1;
+        adc_one_val[ADC_BEMF] = adc_one_bufferA[1][ADC_BEMF];
     } else {
         // Process BufferB
         adc_one_val[ADC_IMON1] = (adc_one_bufferB[0][ADC_IMON1] + adc_one_bufferB[1][ADC_IMON1]) >> 1;
         adc_one_val[ADC_IMON2] = (adc_one_bufferB[0][ADC_IMON2] + adc_one_bufferB[1][ADC_IMON2]) >> 1;
         adc_one_val[ADC_IMON3] = (adc_one_bufferB[0][ADC_IMON3] + adc_one_bufferB[1][ADC_IMON3]) >> 1;
-        adc_one_val[ADC_BEMF] = (adc_one_bufferB[0][ADC_BEMF] + adc_one_bufferB[1][ADC_BEMF]) >> 1;
+        adc_one_val[ADC_BEMF] = adc_one_bufferB[1][ADC_BEMF];
     }
     
     if(curSector != prevSector) {
@@ -384,12 +394,14 @@ void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
 
     AdcOneDmaBuffer ^= 1;
 
-    if(NULL != xTaskDma0Notify) {
-        vTaskNotifyGiveFromISR( xTaskDma0Notify, &xHigherPriorityTaskWoken );
+    /*
+     * Execute commutation algorithm
+     */
+    if(adc_one_fcb != NULL){
+        (*adc_one_fcb)();
     }
-    if( xHigherPriorityTaskWoken != pdFALSE ) {
-        taskYIELD();
-    }
+
+
     HOOK_TRACE_OUT(TRUE);
 }
 
@@ -429,6 +441,13 @@ void __attribute__((__interrupt__, auto_psv)) _DMA1Interrupt(void)
         adc_two_val[ADC_VMON3] = (adc_two_bufferB[0][ADC_VMON3] + adc_two_bufferB[1][ADC_VMON3]) >> 1;
     }
     AdcTwoDmaBuffer ^= 1;
+
+    /*
+     * Calculate Neutral
+     *   3Vn = Va + Vb + Vc
+     */
+    adc_motor_neutral = adc_two_val[ADC_VMON1] + adc_two_val[ADC_VMON2] + adc_two_val[ADC_VMON3];
+
     IFS0bits.DMA1IF = CLEAR;
     HOOK_TRACE_OUT(TRUE);
 }

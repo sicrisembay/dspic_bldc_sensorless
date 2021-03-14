@@ -45,7 +45,17 @@ typedef signed long long    SIGNED64_T;
 #define CLEAR               (0)
 /// \def ACTIVE
 #define ACTIVE              (1)
-/// \deef INACTIVE
+/// \def INACTIVE
 #define INACTIVE            (0)
+
+/*!
+ * \def ON
+ */
+#define ON                  (1)
+
+/*!
+ * \def OFF
+ */
+#define OFF                 (0)
 
 #endif /* GLOBAL_DEF_H */
