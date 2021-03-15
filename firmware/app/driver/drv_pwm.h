@@ -9,7 +9,7 @@
 /*!
  * \def configPWM_FREQ_HZ
  */
-#define configPWM_FREQ_HZ       (20000)
+#define configPWM_FREQ_HZ       (20000U)
 
 /*!
  * \brief  This function initializes <add here>

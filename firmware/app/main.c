@@ -114,48 +114,6 @@ static void PrvTest(void *pvParam)
         vTaskDelayUntil( &xLastExecutionTime, 1);
         USER_LED_1 = BTN1;
         USER_LED_2 = BTN2;
-#if 0
-        if((BTN1 != prevBtn1) && BTN1) {
-            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.15));
-            DrvPwm_UpdateCmtSector(sector);
-            sector++;
-            if(sector > 5) {
-                sector = 0;
-            }
-        } else if ((BTN2 != prevBtn2) && (BTN2)) {
-            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.1));
-            sector--;
-            if(sector < 0) {
-                sector = 5;
-            }
-            DrvPwm_UpdateCmtSector(sector);
-        } else {
-            DrvPwm_UpdateDutyCycle(0);
-        }
-        prevBtn1 = BTN1;
-        prevBtn2 = BTN2;
-#elif 1
-        if(BTN1) {
-            DrvPwm_UpdateDutyCycle(_Q16ftoi(0.8));
-            i++;
-            if(i > cmtInterval) {
-                DrvPwm_UpdateCmtSector(sector);
-                sector++;
-                if(sector > 5) {
-                    sector = 0;
-                }
-                i = 0;
-                cmtInterval--;
-                if(cmtInterval < 5) {
-                    cmtInterval = 5;
-                }
-            }
-        } else {
-            DrvPwm_UpdateDutyCycle(0);
-            i = 0;
-            cmtInterval = 100;
-        }
-#endif
     }
 }
 
@@ -177,7 +135,7 @@ int main(void)
         configASSERT(0);
     }
 
-//    BLDC_init();
+    BLDC_init();
 
     xTaskCreate( PrvTest, "Tst", configMINIMAL_STACK_SIZE*2, NULL, configTASK_PRIORITY_TEST, NULL );
 

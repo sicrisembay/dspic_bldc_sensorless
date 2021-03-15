@@ -100,6 +100,12 @@ volatile UNSIGNED16_T adc_two_val[N_ADC_TWO_CHANNEL];
  */
 volatile UNSIGNED16_T adc_motor_neutral;
 
+/*!
+ * \var UNSIGNED32_T last_cmt_ticker
+ * Number of ADC-DMA0 interrupt since last commutation state change
+ */
+volatile UNSIGNED32_T last_cmt_ticker = 0;
+
 adc_callback adc_one_fcb = NULL;
 static BOOLEAN_T bInit = FALSE;
 
@@ -308,7 +314,7 @@ static void PrvAdc_InitDma(void)
     DMA0CONbits.AMODE   = 0;        // Configure DMA for Register indirect mode with post-increment
     DMA0CONbits.MODE    = 2;                        // Configure DMA for Continuous Ping-Pong mode
     DMA0PAD = (volatile unsigned int)&ADC1BUF0;     // Point DMA to ADC1BUF0
-    DMA0CNT = (2 * N_ADC_ONE_CHANNEL) - 1;          // number of DMA request
+    DMA0CNT = (ADC1_SAMPLES_PER_INT * N_ADC_ONE_CHANNEL) - 1; // number of DMA request
     DMA0REQbits.IRQSEL  = 13;                       // ADC1 convert Done
     DMA0STA = __builtin_dmaoffset(adc_one_bufferA);
     DMA0STB = __builtin_dmaoffset(adc_one_bufferB);
@@ -350,8 +356,6 @@ void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
     HOOK_TRACE_IN(CTX_DMA0_ISR, TRUE);
     IFS0bits.DMA0IF = CLEAR;
 
-    DrvPwm_UpdateCommutation();
-
     if(AdcOneDmaBuffer == 0) {
         // Process BufferA
         adc_one_val[ADC_IMON1] = (adc_one_bufferA[0][ADC_IMON1] + adc_one_bufferA[1][ADC_IMON1]) >> 1;
@@ -365,8 +369,12 @@ void __attribute__((__interrupt__, auto_psv)) _DMA0Interrupt(void)
         adc_one_val[ADC_IMON3] = (adc_one_bufferB[0][ADC_IMON3] + adc_one_bufferB[1][ADC_IMON3]) >> 1;
         adc_one_val[ADC_BEMF] = adc_one_bufferB[1][ADC_BEMF];
     }
-    
+
+    last_cmt_ticker++;
+
     if(curSector != prevSector) {
+        last_cmt_ticker = 0;
+        DrvPwm_UpdateCommutation();
         switch(curSector) {
             case 0:
             case 3: {

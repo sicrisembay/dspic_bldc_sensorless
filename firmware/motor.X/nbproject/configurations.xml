@@ -37,6 +37,7 @@
       <itemPath>../config/FreeRTOSConfig.h</itemPath>
       <itemPath>../config/global_def.h</itemPath>
       <itemPath>../config/PinConfig.h</itemPath>
+      <itemPath>C:/Users/sicris/Documents/01_repo/01_git/dspic_bldc_sensorless/firmware/config/project_setting.h</itemPath>
     </logicalFolder>
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"

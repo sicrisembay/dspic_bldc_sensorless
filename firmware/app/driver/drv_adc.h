@@ -17,6 +17,18 @@
 #define configDMA1_INTERRUPT_PRIORITY    (configKERNEL_INTERRUPT_PRIORITY)
 #endif
 
+/*!
+ * \def ADC1_SAMPLES_PER_INT
+ * Number of samples per channel in every interrupt
+ */
+#define ADC1_SAMPLES_PER_INT        (2)
+
+/*!
+ * \def ADC1_ISR_INTERVAL_US
+ * ISR period of ADC1 in microseconds
+ */
+#define ADC1_ISR_INTERVAL_US        ((1000000U * ADC1_SAMPLES_PER_INT) / configPWM_FREQ_HZ)
+
 typedef void (*adc_callback)(void);
 
 typedef enum
